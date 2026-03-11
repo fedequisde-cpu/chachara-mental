@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Chachara Mental">
+<meta name="theme-color" content="#1E3A50">
+<link rel="manifest" href="manifest.json">
+<title>Cháchara Mental — Apego evitativo y depresión</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+<style>
+:root {
+  --azul: #4A7FA5;
+  --azul-suave: #EBF3FA;
+  --azul-oscuro: #1E3A50;
+  --verde: #5A9E7C;
+  --verde-suave: #EAF5EE;
+  --lila: #7B6FA5;
+  --lila-suave: #F0EDF8;
+  --crema: #FAF8F4;
+  --blanco: #FFFFFF;
+  --texto: #2C3E50;
+  --gris: #6B7B8E;
+  --gris-suave: #F4F6F8;
+  --borde: #E4ECF2;
+  --crisis: #C0392B;
+  --sombra: 0 4px 20px rgba(74,127,165,0.12);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Nunito', sans-serif; background: var(--crema); color: var(--texto); overflow-x: hidden; font-size: 16px; line-height: 1.6; }
+
+/* ── PÁGINA SYSTEM ── */
+.page { display: none; min-height: 100vh; padding-bottom: 80px; }
+.page.active { display: block; }
+
+/* ── NAV BOTTOM ── */
+.nav-bottom {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: white; border-top: 1px solid var(--borde);
+  display: flex; justify-content: space-around; align-items: center;
+  padding: 8px 0 12px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+}
+.nav-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: none; border: none; cursor: pointer;
+  font-family: 'Nunito', sans-serif; font-size: .68rem; font-weight: 700;
+  color: var(--gris); padding: 4px 10px; border-radius: 12px;
+  transition: color .2s, background .2s;
+}
+.nav-btn.active { color: var(--azul); background: var(--azul-suave); }
+.nav-btn span { font-size: 1.3rem; }
+
+/* ── CRISIS BANNER ── */
+.crisis-banner {
+  background: #FFF5F5; border-bottom: 2px solid #FECACA;
+  padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+  font-size: .8rem; font-weight: 700; color: var(--crisis);
+}
+.crisis-tel { background: var(--crisis); color: white; border: none; border-radius: 8px; padding: 5px 12px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .78rem; cursor: pointer; margin-left: auto; }
+
+/* ── HEADER PÁGINAS ── */
+.pg-header {
+  padding: 24px 20px 20px;
+  background: white; border-bottom: 1px solid var(--borde);
+  position: sticky; top: 0; z-index: 50;
+}
+.pg-header-inner { display: flex; align-items: center; gap: 12px; }
+.pg-back { background: var(--gris-suave); border: none; border-radius: 10px; width: 36px; height: 36px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+.pg-title { font-family: 'Lora', serif; font-size: 1.2rem; font-weight: 700; color: var(--texto); }
+
+/* ── INICIO ── */
+#page-inicio .hero {
+  background: linear-gradient(160deg, var(--azul-oscuro) 0%, var(--azul) 100%);
+  padding: 48px 24px 40px; text-align: center; position: relative; overflow: hidden;
+}
+#page-inicio .hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 60%);
+}
+.hero-app { font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,0.6); margin-bottom: 12px; display: block; }
+.hero-titulo { font-family: 'Lora', serif; font-size: 2rem; font-weight: 700; color: white; line-height: 1.2; margin-bottom: 10px; }
+.hero-titulo em { font-style: italic; color: rgba(255,255,255,0.7); }
+.hero-sub { font-size: .88rem; color: rgba(255,255,255,0.7); line-height: 1.6; max-width: 340px; margin: 0 auto 24px; }
+.hero-aviso { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; padding: 6px 14px; font-size: .75rem; font-weight: 700; color: rgba(255,255,255,0.8); }
+
+/* Estado de ánimo */
+.estado-section { padding: 24px 20px; }
+.estado-titulo { font-family: 'Lora', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+.estado-sub { font-size: .83rem; color: var(--gris); margin-bottom: 16px; }
+.estado-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.estado-btn {
+  background: white; border: 2px solid var(--borde); border-radius: 16px;
+  padding: 14px 12px; cursor: pointer; text-align: left;
+  font-family: 'Nunito', sans-serif; transition: all .2s;
+  display: flex; align-items: center; gap: 10px;
+}
+.estado-btn:hover { border-color: var(--azul); background: var(--azul-suave); transform: translateY(-2px); }
+.estado-btn .e-ico { font-size: 1.5rem; }
+.estado-btn .e-txt { font-size: .83rem; font-weight: 700; color: var(--texto); }
+
+/* Secciones inicio */
+.secciones-titulo { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--gris); padding: 0 20px; margin-bottom: 12px; }
+.secciones-grid { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
+.seccion-card {
+  background: white; border-radius: 18px; padding: 18px;
+  border: 1.5px solid var(--borde); cursor: pointer;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: var(--sombra); transition: all .2s;
+}
+.seccion-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(74,127,165,0.18); }
+.sec-ico-wrap { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+.sec-info { flex: 1; }
+.sec-nombre { font-weight: 800; font-size: .95rem; margin-bottom: 2px; }
+.sec-desc { font-size: .78rem; color: var(--gris); line-height: 1.4; }
+.sec-arrow { color: var(--gris); font-size: 1.1rem; }
+
+/* ── APEGO EVITATIVO ── */
+#page-apego .pg-header { background: linear-gradient(135deg, #EBF3FA, white); }
+.contenido-wrap { padding: 20px; }
+.nivel-toggle { display: flex; gap: 8px; margin-bottom: 20px; background: var(--gris-suave); border-radius: 12px; padding: 4px; }
+.nivel-btn { flex: 1; padding: 8px; border: none; border-radius: 9px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: .82rem; cursor: pointer; background: none; color: var(--gris); transition: all .2s; }
+.nivel-btn.activo { background: white; color: var(--azul); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.contenido-bloque { background: white; border-radius: 18px; padding: 20px; margin-bottom: 14px; border: 1.5px solid var(--borde); }
+.bloque-titulo { font-family: 'Lora', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; color: var(--azul-oscuro); display: flex; align-items: center; gap: 8px; }
+.bloque-texto { font-size: .88rem; line-height: 1.75; color: var(--texto); }
+.bloque-texto p { margin-bottom: 10px; }
+.bloque-texto p:last-child { margin-bottom: 0; }
+.fuente-tag { display: inline-flex; align-items: center; gap: 5px; background: var(--azul-suave); border-radius: 8px; padding: 4px 10px; font-size: .72rem; font-weight: 800; color: var(--azul); margin-top: 10px; }
+.tooltip-word { border-bottom: 2px dotted var(--azul); cursor: pointer; color: var(--azul); font-weight: 700; position: relative; }
+.tooltip-box { display: none; position: absolute; bottom: 100%; left: 0; background: var(--azul-oscuro); color: white; border-radius: 10px; padding: 8px 12px; font-size: .78rem; line-height: 1.4; width: 220px; z-index: 10; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+.tooltip-word.open .tooltip-box { display: block; }
+.señales-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.señal-item { background: var(--azul-suave); border-radius: 10px; padding: 8px 10px; font-size: .78rem; font-weight: 700; color: var(--azul-oscuro); display: flex; align-items: flex-start; gap: 6px; }
+.variante-card { border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+.variante-card.despectivo { background: linear-gradient(135deg, #EBF3FA, #DCE8F2); border-left: 4px solid var(--azul); }
+.variante-card.temeroso { background: linear-gradient(135deg, #F0EDF8, #E5E0F4); border-left: 4px solid var(--lila); }
+.variante-titulo { font-weight: 800; font-size: .88rem; margin-bottom: 6px; }
+.variante-texto { font-size: .82rem; color: var(--texto); line-height: 1.5; }
+
+/* ── DEPRESIÓN ── */
+#page-depresion .pg-header { background: linear-gradient(135deg, #EAF5EE, white); }
+
+/* ── CONEXIÓN ── */
+#page-conexion .pg-header { background: linear-gradient(135deg, var(--lila-suave), white); }
+
+/* ── ASISTENTE ── */
+.asistente-aviso { background: var(--azul-suave); border-radius: 14px; padding: 14px 16px; margin: 16px; font-size: .8rem; line-height: 1.6; color: var(--azul-oscuro); border: 1.5px solid #BFDBFE; }
+.asistente-aviso strong { display: block; margin-bottom: 4px; font-size: .85rem; }
+.chat-area { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; min-height: 200px; }
+.msg { display: flex; gap: 10px; align-items: flex-start; }
+.msg.user { flex-direction: row-reverse; }
+.msg-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .9rem; flex-shrink: 0; background: var(--gris-suave); }
+.msg-burbuja { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: .85rem; line-height: 1.6; }
+.msg.bot .msg-burbuja { background: white; border: 1.5px solid var(--borde); border-radius: 4px 16px 16px 16px; }
+.msg.user .msg-burbuja { background: var(--azul); color: white; border-radius: 16px 4px 16px 16px; }
+.msg-fuente { font-size: .72rem; color: var(--gris); margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+.chat-input-wrap { padding: 12px 16px; background: white; border-top: 1px solid var(--borde); display: flex; gap: 8px; }
+.chat-input { flex: 1; border: 1.5px solid var(--borde); border-radius: 12px; padding: 10px 14px; font-family: 'Nunito', sans-serif; font-size: .88rem; outline: none; background: var(--gris-suave); }
+.chat-input:focus { border-color: var(--azul); background: white; }
+.chat-send { background: var(--azul); color: white; border: none; border-radius: 12px; width: 40px; height: 40px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+.sugerencias { padding: 0 16px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+.sugerencia-btn { background: white; border: 1.5px solid var(--borde); border-radius: 50px; padding: 6px 14px; font-family: 'Nunito', sans-serif; font-size: .78rem; font-weight: 700; cursor: pointer; color: var(--texto); transition: all .2s; }
+.sugerencia-btn:hover { background: var(--azul-suave); border-color: var(--azul); color: var(--azul); }
+.msg-crisis-box { background: #FFF5F5; border: 2px solid #FECACA; border-radius: 14px; padding: 14px; }
+.msg-crisis-titulo { font-weight: 800; color: var(--crisis); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.msg-crisis-texto { font-size: .83rem; line-height: 1.6; margin-bottom: 10px; }
+.crisis-btn { display: block; width: 100%; background: var(--crisis); color: white; border: none; border-radius: 10px; padding: 10px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .85rem; cursor: pointer; margin-bottom: 6px; }
+.crisis-btn.secondary { background: white; color: var(--crisis); border: 2px solid #FECACA; }
+
+/* ── DIARIO ── */
+.diario-wrap { padding: 20px; }
+.diario-fecha { font-size: .78rem; color: var(--gris); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.diario-textarea { width: 100%; border: 1.5px solid var(--borde); border-radius: 16px; padding: 16px; font-family: 'Nunito', sans-serif; font-size: .9rem; line-height: 1.7; min-height: 180px; outline: none; background: white; resize: none; color: var(--texto); }
+.diario-textarea:focus { border-color: var(--azul); }
+.diario-guardar { width: 100%; background: var(--azul); color: white; border: none; border-radius: 14px; padding: 14px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .95rem; cursor: pointer; margin-top: 10px; }
+.humor-track { display: flex; justify-content: space-between; margin-bottom: 20px; }
+.humor-btn { background: white; border: 2px solid var(--borde); border-radius: 14px; padding: 10px 8px; cursor: pointer; font-size: 1.4rem; text-align: center; flex: 1; margin: 0 3px; transition: all .2s; }
+.humor-btn.sel { border-color: var(--azul); background: var(--azul-suave); transform: scale(1.1); }
+.entradas-lista { margin-top: 20px; }
+.entrada-item { background: white; border-radius: 14px; padding: 14px; margin-bottom: 10px; border: 1.5px solid var(--borde); }
+.entrada-meta { font-size: .72rem; color: var(--gris); font-weight: 700; margin-bottom: 6px; }
+.entrada-texto { font-size: .85rem; line-height: 1.6; color: var(--texto); }
+
+/* ── GLOSARIO ── */
+.glosario-wrap { padding: 20px; }
+.glosario-item { background: white; border-radius: 14px; padding: 16px; margin-bottom: 10px; border: 1.5px solid var(--borde); cursor: pointer; }
+.glosario-term { font-weight: 800; font-size: .95rem; color: var(--azul-oscuro); display: flex; justify-content: space-between; align-items: center; }
+.glosario-def { font-size: .83rem; color: var(--texto); line-height: 1.6; margin-top: 8px; display: none; padding-top: 8px; border-top: 1px solid var(--borde); }
+.glosario-item.open .glosario-def { display: block; }
+.glosario-fuente { font-size: .72rem; color: var(--gris); margin-top: 6px; font-style: italic; }
+
+/* ── AVISO BIENVENIDA ── */
+#bienvenida-overlay { display:flex; position:fixed; inset:0; z-index:300; background:rgba(30,58,80,0.8); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:20px; }
+#bienvenida-overlay.oculto { display:none; }
+#bienvenida-card { background:white; border-radius:24px; padding:28px 22px; max-width:400px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+.bv-ico { font-size:2.5rem; text-align:center; margin-bottom:8px; }
+.bv-titulo { font-family:'Lora',serif; font-size:1.3rem; font-weight:700; text-align:center; margin-bottom:6px; color:var(--azul-oscuro); }
+.bv-sub { font-size:.82rem; color:var(--gris); text-align:center; margin-bottom:20px; line-height:1.5; }
+.bv-punto { display:flex; gap:10px; margin-bottom:12px; background:var(--gris-suave); border-radius:12px; padding:10px 12px; }
+.bv-p-ico { font-size:1.2rem; flex-shrink:0; }
+.bv-p-txt { font-size:.8rem; line-height:1.5; }
+.bv-p-txt b { display:block; font-size:.85rem; margin-bottom:2px; color:var(--texto); }
+.bv-aviso-edad { background:#FFF8EE; border:1.5px solid #F59E0B44; border-radius:12px; padding:10px 12px; font-size:.78rem; color:#92400E; font-weight:700; margin:12px 0; line-height:1.5; text-align:center; }
+.bv-legal { font-size:.68rem; color:var(--gris); text-align:center; margin:10px 0 14px; line-height:1.5; }
+.bv-btn { width:100%; background:var(--azul); color:white; border:none; border-radius:14px; padding:14px; font-family:'Nunito',sans-serif; font-weight:800; font-size:.95rem; cursor:pointer; }
+
+
+/* RELACIONES */
+.relacion-tab-bar { display: flex; gap: 6px; overflow-x: auto; padding: 0 0 12px; scrollbar-width: none; margin-bottom:4px; }
+.relacion-tab-bar::-webkit-scrollbar { display: none; }
+.relacion-tab { background: var(--gris-suave); border: 1.5px solid var(--borde); border-radius: 50px; padding: 7px 14px; font-family: 'Nunito', sans-serif; font-size: .79rem; font-weight: 700; cursor: pointer; white-space: nowrap; color: var(--gris); transition: all .2s; }
+.relacion-tab.activo { background: #FEF3EB; border-color: #E07B39; color: #E07B39; }
+.relacion-panel { display: none; }
+.relacion-panel.activo { display: block; }
+.patron-item { background: #FEF3EB; border-radius: 10px; padding: 9px 12px; font-size: .8rem; color: #7C3400; margin-bottom: 7px; line-height: 1.5; border-left: 3px solid #E07B39; }
+.patron-item strong { display: block; font-size: .84rem; margin-bottom:3px; }
+
+/* EJERCICIOS */
+.ejercicio-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 11px; border: 1.5px solid var(--borde); cursor: pointer; }
+.ej-header { display: flex; align-items: center; gap: 11px; }
+.ej-ico { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0; }
+.ej-nombre { font-weight: 800; font-size: .9rem; }
+.ej-desc { font-size: .74rem; color: var(--gris); margin-top: 2px; }
+.ej-contenido { display: none; margin-top: 13px; padding-top: 13px; border-top: 1px solid var(--borde); }
+.ejercicio-card.open .ej-contenido { display: block; }
+.ej-paso { display: flex; gap: 10px; margin-bottom: 9px; align-items: flex-start; }
+.ej-paso-num { width: 25px; height: 25px; border-radius: 50%; background: var(--verde); color: white; font-size: .73rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.ej-paso-txt { font-size: .84rem; line-height: 1.65; flex: 1; }
+.ej-aviso { background: var(--verde-suave); border-radius: 10px; padding: 9px 11px; font-size: .77rem; color: #2D6A4F; margin-top: 9px; line-height: 1.5; }
+
+/* SEGUIMIENTO */
+.humor-registro { display: flex; justify-content: space-between; margin-bottom: 15px; gap: 5px; }
+.humor-reg-btn { background: white; border: 2px solid var(--borde); border-radius: 13px; padding: 10px 5px; cursor: pointer; font-size: 1.25rem; flex: 1; transition: all .2s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.humor-reg-btn .label { font-size: .59rem; font-weight: 700; color: var(--gris); font-family: 'Nunito',sans-serif; }
+.humor-reg-btn.sel { border-color: var(--azul); background: var(--azul-suave); transform: scale(1.05); }
+.humor-reg-btn.sel .label { color: var(--azul); }
+.grafica-wrap { background: white; border-radius: 16px; padding: 15px; border: 1.5px solid var(--borde); margin-bottom: 13px; }
+.grafica-titulo { font-weight: 800; font-size: .84rem; margin-bottom: 11px; color: var(--azul-oscuro); }
+.grafica-barras { display: flex; align-items: flex-end; gap: 6px; height: 80px; }
+.barra-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+.barra { width: 100%; border-radius: 5px 5px 0 0; background: var(--azul-suave); min-height: 4px; }
+.barra.llena { background: var(--azul); }
+.barra-dia { font-size: .59rem; color: var(--gris); font-weight: 700; }
+.barra-emoji { font-size: .72rem; }
+.seg-guardar { width: 100%; background: var(--azul); color: white; border: none; border-radius: 13px; padding: 12px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .9rem; cursor: pointer; margin-bottom: 13px; }
+
+/* RECURSOS */
+.recurso-categoria { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--gris); margin: 14px 0 7px; }
+.recurso-item { background: white; border-radius: 13px; padding: 13px 15px; margin-bottom: 7px; border: 1.5px solid var(--borde); display: flex; gap: 11px; align-items: flex-start; }
+.recurso-ico { font-size: 1.35rem; flex-shrink: 0; margin-top: 1px; }
+.recurso-titulo { font-weight: 800; font-size: .87rem; margin-bottom: 2px; }
+.recurso-desc { font-size: .75rem; color: var(--gris); line-height: 1.4; }
+.recurso-tag { display: inline-block; margin-top: 5px; background: var(--gris-suave); border-radius: 6px; padding: 2px 8px; font-size: .67rem; font-weight: 800; color: var(--gris); }
+
+/* CRISIS PAGINA */
+.crisis-hero { background: linear-gradient(160deg, #7B1D1D, var(--crisis)); padding: 30px 22px 26px; text-align: center; }
+.crisis-hero h1 { font-family: 'Lora', serif; font-size: 1.6rem; color: white; margin-bottom: 7px; }
+.crisis-hero p { font-size: .84rem; color: rgba(255,255,255,0.82); line-height: 1.6; }
+.crisis-btn-grande { display: flex; align-items: center; gap: 13px; background: white; border: none; border-radius: 16px; padding: 16px; width: 100%; cursor: pointer; font-family: 'Nunito', sans-serif; text-align: left; margin-bottom: 9px; box-shadow: var(--sombra); transition: all .2s; }
+.crisis-btn-grande:hover { transform: translateY(-2px); }
+.cb-ico { width: 48px; height: 48px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; flex-shrink: 0; }
+.cb-num { font-size: 1.25rem; font-weight: 800; }
+.cb-desc { font-size: .76rem; color: var(--gris); margin-top: 2px; line-height: 1.4; }
+.crisis-senal { display: flex; gap: 8px; margin-bottom: 7px; font-size: .82rem; line-height: 1.5; }
+.msg-crisis-box { background: #FFF5F5; border: 2px solid #FECACA; border-radius: 13px; padding: 12px; }
+.msg-crisis-titulo { font-weight: 800; color: var(--crisis); margin-bottom: 6px; font-size: .88rem; }
+.msg-crisis-texto { font-size: .81rem; line-height: 1.6; margin-bottom: 9px; }
+.crisis-chat-btn { display: block; width: 100%; background: var(--crisis); color: white; border: none; border-radius: 9px; padding: 9px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .81rem; cursor: pointer; margin-bottom: 5px; }
+.crisis-chat-btn.sec { background: white; color: var(--crisis); border: 2px solid #FECACA; }
+
+
+/* FUENTES */
+.fuentes-section{padding:0 18px 24px;} .fuentes-header{font-size:.69rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);margin-bottom:12px;} .fuentes-intro{font-size:.82rem;color:var(--gris);line-height:1.6;margin-bottom:14px;} .fuentes-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;} .fuente-card{background:white;border:1.5px solid var(--borde);border-radius:14px;padding:13px 12px;display:flex;align-items:flex-start;gap:10px;} .fuente-card-ico{font-size:1.5rem;flex-shrink:0;} .fuente-card-nombre{font-weight:800;font-size:.78rem;color:var(--texto);line-height:1.3;margin-bottom:2px;} .fuente-card-tipo{font-size:.68rem;color:var(--gris);font-weight:700;} .fuentes-nota{background:var(--azul-suave);border-radius:12px;padding:11px 13px;font-size:.78rem;color:var(--azul-oscuro);line-height:1.6;border:1.5px solid #BFDBFE;} .fuentes-nota strong{display:block;font-size:.82rem;margin-bottom:3px;}
+/* FAQ */
+.faq-item{background:white;border-radius:14px;padding:15px;margin-bottom:9px;border:1.5px solid var(--borde);cursor:pointer;} .faq-item.open{border-color:var(--azul);} .faq-pregunta{font-weight:700;font-size:.87rem;color:var(--texto);display:flex;justify-content:space-between;align-items:flex-start;gap:10px;line-height:1.5;} .faq-toggle{font-size:1.1rem;color:var(--gris);flex-shrink:0;transition:transform .2s;} .faq-item.open .faq-toggle{transform:rotate(45deg);color:var(--azul);} .faq-respuesta{display:none;font-size:.83rem;color:var(--texto);line-height:1.7;margin-top:10px;padding-top:10px;border-top:1px solid var(--borde);} .faq-item.open .faq-respuesta{display:block;} .faq-fuente{font-size:.7rem;color:var(--gris);margin-top:7px;font-style:italic;}
+/* AVISO */
+.aviso-bloque{background:white;border-radius:16px;padding:18px;margin-bottom:12px;border:1.5px solid var(--borde);} .aviso-titulo{font-weight:800;font-size:.9rem;color:var(--azul-oscuro);margin-bottom:8px;} .aviso-texto{font-size:.82rem;line-height:1.75;color:var(--texto);} .aviso-texto p{margin-bottom:9px;} .aviso-email{color:var(--azul);font-weight:700;}
+/* CUERPO */
+.senales-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;} .senal-rosa{background:#FDF2F8;color:#9D174D;border-radius:10px;padding:8px 10px;font-size:.76rem;font-weight:700;}
+/* RELACIONES */
+.relacion-tab-bar{display:flex;gap:6px;overflow-x:auto;padding:0 0 12px;scrollbar-width:none;} .relacion-tab-bar::-webkit-scrollbar{display:none;} .relacion-tab{background:var(--gris-suave);border:1.5px solid var(--borde);border-radius:50px;padding:7px 14px;font-family:'Nunito',sans-serif;font-size:.79rem;font-weight:700;cursor:pointer;white-space:nowrap;color:var(--gris);transition:all .2s;} .relacion-tab.activo{background:#FEF3EB;border-color:#E07B39;color:#E07B39;} .relacion-panel{display:none;} .relacion-panel.activo{display:block;} .patron-item{background:#FEF3EB;border-radius:10px;padding:9px 12px;font-size:.8rem;color:#7C3400;margin-bottom:7px;line-height:1.5;border-left:3px solid #E07B39;} .patron-item strong{display:block;font-size:.84rem;margin-bottom:3px;}
+/* EJERCICIOS */
+.ejercicio-card{background:white;border-radius:16px;padding:16px;margin-bottom:11px;border:1.5px solid var(--borde);cursor:pointer;} .ej-header{display:flex;align-items:center;gap:11px;} .ej-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;} .ej-nombre{font-weight:800;font-size:.9rem;} .ej-desc{font-size:.74rem;color:var(--gris);margin-top:2px;} .ej-contenido{display:none;margin-top:13px;padding-top:13px;border-top:1px solid var(--borde);} .ejercicio-card.open .ej-contenido{display:block;} .ej-paso{display:flex;gap:10px;margin-bottom:9px;align-items:flex-start;} .ej-paso-num{width:25px;height:25px;border-radius:50%;background:var(--verde);color:white;font-size:.73rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;} .ej-paso-txt{font-size:.84rem;line-height:1.65;flex:1;} .ej-aviso{background:var(--verde-suave);border-radius:10px;padding:9px 11px;font-size:.77rem;color:#2D6A4F;margin-top:9px;line-height:1.5;}
+/* SEGUIMIENTO */
+.humor-registro{display:flex;justify-content:space-between;margin-bottom:15px;gap:5px;} .humor-reg-btn{background:white;border:2px solid var(--borde);border-radius:13px;padding:10px 5px;cursor:pointer;font-size:1.25rem;flex:1;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:3px;} .humor-reg-btn .label{font-size:.59rem;font-weight:700;color:var(--gris);font-family:'Nunito',sans-serif;} .humor-reg-btn.sel{border-color:var(--azul);background:var(--azul-suave);transform:scale(1.05);} .humor-reg-btn.sel .label{color:var(--azul);} .grafica-wrap{background:white;border-radius:16px;padding:15px;border:1.5px solid var(--borde);margin-bottom:13px;} .grafica-titulo{font-weight:800;font-size:.84rem;margin-bottom:11px;color:var(--azul-oscuro);} .grafica-barras{display:flex;align-items:flex-end;gap:6px;height:80px;} .barra-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;} .barra{width:100%;border-radius:5px 5px 0 0;background:var(--azul-suave);min-height:4px;} .barra.llena{background:var(--azul);} .barra-dia{font-size:.59rem;color:var(--gris);font-weight:700;} .barra-emoji{font-size:.72rem;} .seg-guardar{width:100%;background:var(--azul);color:white;border:none;border-radius:13px;padding:12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;margin-bottom:13px;}
+/* RECURSOS */
+.recurso-categoria{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--gris);margin:14px 0 7px;} .recurso-item{background:white;border-radius:13px;padding:13px 15px;margin-bottom:7px;border:1.5px solid var(--borde);display:flex;gap:11px;align-items:flex-start;} .recurso-ico{font-size:1.35rem;flex-shrink:0;margin-top:1px;} .recurso-titulo{font-weight:800;font-size:.87rem;margin-bottom:2px;} .recurso-desc{font-size:.75rem;color:var(--gris);line-height:1.4;} .recurso-tag{display:inline-block;margin-top:5px;background:var(--gris-suave);border-radius:6px;padding:2px 8px;font-size:.67rem;font-weight:800;color:var(--gris);}
+/* CRISIS PAGINA */
+.crisis-hero{background:linear-gradient(160deg,#7B1D1D,var(--crisis));padding:30px 22px 26px;text-align:center;} .crisis-hero h1{font-family:'Lora',serif;font-size:1.6rem;color:white;margin-bottom:7px;} .crisis-hero p{font-size:.84rem;color:rgba(255,255,255,0.82);line-height:1.6;} .crisis-btn-grande{display:flex;align-items:center;gap:13px;background:white;border:none;border-radius:16px;padding:16px;width:100%;cursor:pointer;font-family:'Nunito',sans-serif;text-align:left;margin-bottom:9px;box-shadow:var(--sombra);transition:all .2s;} .cb-ico{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.35rem;flex-shrink:0;} .cb-num{font-size:1.25rem;font-weight:800;} .cb-desc{font-size:.76rem;color:var(--gris);margin-top:2px;line-height:1.4;} .crisis-senal{display:flex;gap:8px;margin-bottom:7px;font-size:.82rem;line-height:1.5;}
+
+/* Animaciones */
+@keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.page.active { animation: fadeIn .3s ease; }
+</style>
+</head>
+<body>
+
+<!-- AVISO BIENVENIDA -->
+<div id="bienvenida-overlay">
+  <div id="bienvenida-card">
+    <div class="bv-ico">🧠</div>
+    <div class="bv-titulo">Cháchara Mental</div>
+    <div class="bv-sub">Información sobre apego evitativo y depresión, basada en fuentes oficiales y científicas.</div>
+    <div class="bv-punto"><div class="bv-p-ico">📱</div><div class="bv-p-txt"><b>Todo en tu dispositivo</b>Tus datos no salen de tu móvil. Sin servidor, sin registro, sin rastro.</div></div>
+    <div class="bv-punto"><div class="bv-p-ico">📚</div><div class="bv-p-txt"><b>Fuentes oficiales</b>Toda la información proviene de la OMS, APA, Ministerio de Sanidad y estudios científicos verificados.</div></div>
+    <div class="bv-punto"><div class="bv-p-ico">🔒</div><div class="bv-p-txt"><b>Anónimo y privado</b>No hay cuenta, no hay cookies, no hay rastreo. Nadie sabe que estás aquí.</div></div>
+    <div class="bv-punto"><div class="bv-p-ico">⚕️</div><div class="bv-p-txt"><b>No sustituye a un profesional</b>Esta app es informativa. Si necesitas ayuda, consulta a un psicólogo o llama al 024.</div></div>
+    <div class="bv-aviso-edad">⚠️ Esta app está dirigida a mayores de 16 años. Si eres menor, consulta con un adulto de confianza.</div>
+    <div class="bv-legal">Al continuar confirmas que tienes 16 años o más y que entiendes que esta app es informativa y no sustituye atención profesional.</div>
+    <button class="bv-btn" onclick="cerrarBienvenida()">Entendido, entrar</button>
+  </div>
+</div>
+
+<!-- CRISIS BANNER (siempre visible) -->
+<div class="crisis-banner">
+  🆘 ¿Necesitas ayuda ahora?
+  <button class="crisis-tel" onclick="goTo('crisis')">024 · 112</button>
+</div>
+
+<!-- ══════════════ INICIO ══════════════ -->
+<div id="page-inicio" class="page active" style="padding-top:44px;">
+  <div class="hero">
+    <span class="hero-app">Cháchara Mental</span>
+    <h1 class="hero-titulo">Entenderte mejor<br>es el primer<br><em>paso hacia ti</em></h1>
+    <p class="hero-sub">Información verificada sobre apego evitativo y depresión. Sin IA. Sin datos. Todo en tu dispositivo.</p>
+    <div class="hero-aviso">🔒 Anónimo · Gratuito · Fuentes oficiales</div>
+  </div>
+
+  <div class="fuentes-section">
+    <div class="fuentes-header">&#128218; INFORMACION VERIFICADA</div>
+    <div class="fuentes-intro">Todo el contenido proviene de fuentes cientificas y organismos oficiales. Aqui no hay opiniones ni consejos de internet.</div>
+    <div class="fuentes-grid">
+      <div class="fuente-card"><div class="fuente-card-ico">&#127757;</div><div><div class="fuente-card-nombre">OMS</div><div class="fuente-card-tipo">Org. Mundial de la Salud</div></div></div>
+      <div class="fuente-card"><div class="fuente-card-ico">&#127963;</div><div><div class="fuente-card-nombre">Ministerio de Sanidad</div><div class="fuente-card-tipo">Gobierno de Espana</div></div></div>
+      <div class="fuente-card"><div class="fuente-card-ico">&#129504;</div><div><div class="fuente-card-nombre">APA</div><div class="fuente-card-tipo">Asoc. Americana de Psicologia</div></div></div>
+      <div class="fuente-card"><div class="fuente-card-ico">&#128218;</div><div><div class="fuente-card-nombre">Bowlby &amp; Ainsworth</div><div class="fuente-card-tipo">Teoria del Apego (1969-1978)</div></div></div>
+      <div class="fuente-card"><div class="fuente-card-ico">&#128209;</div><div><div class="fuente-card-nombre">NICE Guidelines</div><div class="fuente-card-tipo">Instituto Nacional Reino Unido</div></div></div>
+      <div class="fuente-card"><div class="fuente-card-ico">&#128203;</div><div><div class="fuente-card-nombre">DSM-5 &amp; CIE-11</div><div class="fuente-card-tipo">Manuales diagnosticos oficiales</div></div></div>
+    </div>
+    <div class="fuentes-nota"><strong>&#128274; Sin IA. Sin opiniones. Sin publicidad.</strong>Cada afirmacion tiene una fuente cientifica o institucional detras.</div>
+  </div>
+
+  <div class="estado-section">
+    <div class="estado-titulo">¿Cómo estás hoy?</div>
+    <div class="estado-sub">Cuéntanos y te sugerimos por dónde empezar.</div>
+    <div class="estado-grid">
+      <button class="estado-btn" onclick="goTo('apego')"><span class="e-ico">😶</span><span class="e-txt">Me cuesta conectar con otros</span></button>
+      <button class="estado-btn" onclick="goTo('depresion')"><span class="e-ico">😔</span><span class="e-txt">Me siento triste o vacío/a</span></button>
+      <button class="estado-btn" onclick="goTo('conexion')"><span class="e-ico">🔗</span><span class="e-txt">Creo que ambas cosas están relacionadas</span></button>
+      <button class="estado-btn" onclick="goTo('asistente')"><span class="e-ico">💬</span><span class="e-txt">Tengo una duda concreta</span></button>
+    </div>
+  </div>
+
+  <div class="secciones-titulo">ÁREAS DE INFORMACIÓN</div>
+  <div class="secciones-grid">
+    <div class="seccion-card" onclick="goTo('apego')">
+      <div class="sec-ico-wrap" style="background:#EBF3FA;">💙</div>
+      <div class="sec-info">
+        <div class="sec-nombre" style="color:var(--azul);">Apego Evitativo</div>
+        <div class="sec-desc">Qué es, cómo se forma, cómo te afecta y qué puedes hacer</div>
+      </div>
+      <div class="sec-arrow">›</div>
+    </div>
+    <div class="seccion-card" onclick="goTo('depresion')">
+      <div class="sec-ico-wrap" style="background:#EAF5EE;">🌿</div>
+      <div class="sec-info">
+        <div class="sec-nombre" style="color:var(--verde);">Depresión</div>
+        <div class="sec-desc">Criterios oficiales, síntomas, origen y recursos de ayuda</div>
+      </div>
+      <div class="sec-arrow">›</div>
+    </div>
+    <div class="seccion-card" onclick="goTo('conexion')">
+      <div class="sec-ico-wrap" style="background:#F0EDF8;">🔗</div>
+      <div class="sec-info">
+        <div class="sec-nombre" style="color:var(--lila);">La conexión entre ambos</div>
+        <div class="sec-desc">Por qué el apego evitativo puede derivar en depresión</div>
+      </div>
+      <div class="sec-arrow">›</div>
+    </div>
+    <div class="seccion-card" onclick="goTo('diario')">
+      <div class="sec-ico-wrap" style="background:#FFF8EE;">📔</div>
+      <div class="sec-info">
+        <div class="sec-nombre">Diario emocional</div>
+        <div class="sec-desc">Registra cómo te sientes. Solo en tu dispositivo.</div>
+      </div>
+      <div class="sec-arrow">›</div>
+    </div>
+    <div class="seccion-card" onclick="goTo('relaciones')">
+      <div class="sec-ico-wrap" style="background:#FEF3EB;">&#128145;</div>
+      <div class="sec-info"><div class="sec-nombre" style="color:#E07B39;">Como me afecta en mis relaciones</div><div class="sec-desc">Pareja, familia, amigos y trabajo</div></div>
+      <div class="sec-arrow">&#8250;</div>
+    </div>
+    <div class="seccion-card" onclick="goTo('ejercicios')">
+      <div class="sec-ico-wrap" style="background:var(--verde-suave);">&#128170;</div>
+      <div class="sec-info"><div class="sec-nombre" style="color:var(--verde);">Ejercicios practicos</div><div class="sec-desc">Respiracion, grounding y escritura reflexiva</div></div>
+      <div class="sec-arrow">&#8250;</div>
+    </div>
+    <div class="seccion-card" onclick="goTo('seguimiento')">
+      <div class="sec-ico-wrap" style="background:var(--azul-suave);">&#128202;</div>
+      <div class="sec-info"><div class="sec-nombre" style="color:var(--azul);">Seguimiento del animo</div><div class="sec-desc">Grafica visual privada, solo en tu dispositivo</div></div>
+      <div class="sec-arrow">&#8250;</div>
+    </div>
+    <div class="seccion-card" onclick="goTo('recursos')">
+      <div class="sec-ico-wrap" style="background:var(--verde-suave);">&#128279;</div>
+      <div class="sec-info"><div class="sec-nombre" style="color:var(--verde);">Recursos verificados</div><div class="sec-desc">Libros, webs oficiales y podcasts recomendados</div></div>
+      <div class="sec-arrow">&#8250;</div>
+    </div>
+    <div class="seccion-card" onclick="goTo('relaciones')"><div class="sec-ico-wrap" style="background:#FEF3EB;">&#128145;</div><div class="sec-info"><div class="sec-nombre" style="color:#E07B39;">Como me afecta en mis relaciones</div><div class="sec-desc">Pareja, familia, amigos y trabajo</div></div><div class="sec-arrow">&#8250;</div></div>
+    <div class="seccion-card" onclick="goTo('ejercicios')"><div class="sec-ico-wrap" style="background:var(--verde-suave);">&#128170;</div><div class="sec-info"><div class="sec-nombre" style="color:var(--verde);">Ejercicios practicos</div><div class="sec-desc">Respiracion, grounding y escritura reflexiva</div></div><div class="sec-arrow">&#8250;</div></div>
+    <div class="seccion-card" onclick="goTo('seguimiento')"><div class="sec-ico-wrap" style="background:var(--azul-suave);">&#128202;</div><div class="sec-info"><div class="sec-nombre" style="color:var(--azul);">Seguimiento del animo</div><div class="sec-desc">Grafica visual privada, solo en tu dispositivo</div></div><div class="sec-arrow">&#8250;</div></div>
+    <div class="seccion-card" onclick="goTo('recursos')"><div class="sec-ico-wrap" style="background:var(--verde-suave);">&#128279;</div><div class="sec-info"><div class="sec-nombre" style="color:var(--verde);">Recursos verificados</div><div class="sec-desc">Libros, webs oficiales y podcasts</div></div><div class="sec-arrow">&#8250;</div></div>
+    <div class="seccion-card" onclick="goTo('cuerpo')"><div class="sec-ico-wrap" style="background:#FDF2F8;">&#128148;</div><div class="sec-info"><div class="sec-nombre" style="color:#9D174D;">El cuerpo tambien habla</div><div class="sec-desc">Somatizacion y emociones en el cuerpo</div></div><div class="sec-arrow">&#8250;</div></div>
+    <div class="seccion-card" onclick="goTo('cambio')"><div class="sec-ico-wrap" style="background:#ECFDF5;">&#128994;</div><div class="sec-info"><div class="sec-nombre" style="color:#065F46;">Puede cambiar</div><div class="sec-desc">Apego seguro ganado: como se produce el cambio</div></div><div class="sec-arrow">&#8250;</div></div>
+    <div class="seccion-card" onclick="goTo('faq')"><div class="sec-ico-wrap" style="background:#F4F6F8;">&#10067;</div><div class="sec-info"><div class="sec-nombre">Preguntas frecuentes</div><div class="sec-desc">8 dudas comunes respondidas con fuentes oficiales</div></div><div class="sec-arrow">&#8250;</div></div>
+    <div class="seccion-card" onclick="goTo('asistente')"><div class="sec-ico-wrap" style="background:#EBF3FA;">&#128172;</div><div class="sec-info"><div class="sec-nombre">Asistente de dudas</div><div class="sec-desc">Respuestas de fuentes oficiales. No es IA.</div></div><div class="sec-arrow">&#8250;</div></div>
+    <div class="seccion-card" onclick="goTo('glosario')">
+      <div class="sec-ico-wrap" style="background:#F4F6F8;">📚</div>
+      <div class="sec-info">
+        <div class="sec-nombre">Glosario</div>
+        <div class="sec-desc">Términos técnicos explicados en lenguaje accesible</div>
+      </div>
+      <div class="sec-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ APEGO EVITATIVO ══════════════ -->
+<div id="page-apego" class="page" style="padding-top:44px;">
+  <div class="pg-header">
+    <div class="pg-header-inner">
+      <button class="pg-back" onclick="goTo('inicio')">←</button>
+      <span class="pg-title">💙 Apego Evitativo</span>
+    </div>
+  </div>
+  <div class="contenido-wrap">
+
+    <div class="nivel-toggle">
+      <button class="nivel-btn activo" onclick="setNivel('basico',this)">📖 Lectura fácil</button>
+      <button class="nivel-btn" onclick="setNivel('detallado',this)">🔬 Detallado</button>
+    </div>
+
+    <div id="nivel-basico">
+      <div class="contenido-bloque">
+        <div class="bloque-titulo">🌱 ¿Qué es el apego evitativo?</div>
+        <div class="bloque-texto">
+          <p>El apego evitativo es una forma de relacionarse con los demás que aprendiste cuando eras pequeño/a. No es un defecto ni una enfermedad — es una estrategia que tu mente desarrolló para protegerte.</p>
+          <p>Si de niño/a pedías cariño o apoyo y no lo recibías de forma consistente, tu cerebro aprendió que pedir ayuda no sirve de nada. Así que dejaste de pedirla.</p>
+          <p>Frases que quizás reconoces: <em>"No necesito a nadie", "Prefiero hacerlo solo/a", "Las emociones son una debilidad".</em></p>
+        </div>
+        <span class="fuente-tag">📚 Bowlby, 1988 · Ainsworth, 1978</span>
+      </div>
+
+      <div class="contenido-bloque">
+        <div class="bloque-titulo">🔍 Señales comunes</div>
+        <div class="señales-grid">
+          <div class="señal-item">😶 Te incomoda la intimidad emocional</div>
+          <div class="señal-item">🚪 Necesitas mucho espacio personal</div>
+          <div class="señal-item">🤐 Te cuesta pedir ayuda</div>
+          <div class="señal-item">❄️ Te describen como frío/a o distante</div>
+          <div class="señal-item">🏃 Huyes cuando las cosas se intensifican</div>
+          <div class="señal-item">💪 Valoras mucho la independencia</div>
+        </div>
+        <span class="fuente-tag">📚 Bartholomew & Horowitz, 1991</span>
+      </div>
+
+      <div class="contenido-bloque">
+        <div class="bloque-titulo">🔄 Los dos tipos</div>
+        <div class="variante-card despectivo">
+          <div class="variante-titulo" style="color:var(--azul);">💙 Evitativo-despectivo</div>
+          <div class="variante-texto">Minimiza las emociones. Se siente autosuficiente. Puede parecer seguro por fuera, pero evita la conexión profunda.</div>
+        </div>
+        <div class="variante-card temeroso">
+          <div class="variante-titulo" style="color:var(--lila);">💜 Evitativo-temeroso</div>
+          <div class="variante-texto">Desea conexión pero la teme. Cuando alguien se acerca demasiado, retrocede. Vive en esa contradicción constante.</div>
+        </div>
+        <span class="fuente-tag">📚 Bartholomew & Horowitz, 1991 · Fraley & Shaver, 2000</span>
+      </div>
+    </div>
+
+    <div id="nivel-detallado" style="display:none;">
+      <div class="contenido-bloque">
+        <div class="bloque-titulo">🧬 Origen científico</div>
+        <div class="bloque-texto">
+          <p>Según la <span class="tooltip-word" onclick="this.classList.toggle('open')">Teoría del Apego<span class="tooltip-box">Modelo psicológico desarrollado por Bowlby (1969) que explica cómo los vínculos emocionales tempranos con los cuidadores moldean las relaciones futuras.</span></span> de John Bowlby (1969), los humanos estamos biológicamente programados para formar vínculos con nuestros cuidadores como mecanismo de supervivencia.</p>
+          <p>El apego evitativo surge cuando el niño percibe que sus necesidades emocionales no serán atendidas. Los cuidadores pueden ser físicamente presentes pero emocionalmente fríos, críticos, o incómodos con las emociones del niño.</p>
+          <p>El niño desarrolla entonces lo que Bowlby llamó <span class="tooltip-word" onclick="this.classList.toggle('open')">Modelos Internos de Funcionamiento<span class="tooltip-box">Representaciones mentales de uno mismo y de los demás, formadas en la infancia, que guían las expectativas y conductas en las relaciones adultas.</span></span>: aprende que el mundo emocional es poco fiable y que la autosuficiencia es la estrategia más segura.</p>
+        </div>
+        <span class="fuente-tag">📚 Bowlby, 1969 · Mikulincer & Shaver, 2016</span>
+      </div>
+
+      <div class="contenido-bloque">
+        <div class="bloque-titulo">📊 Prevalencia</div>
+        <div class="bloque-texto">
+          <p>Los estudios de Mary Ainsworth (1978) con la <span class="tooltip-word" onclick="this.classList.toggle('open')">Situación Extraña<span class="tooltip-box">Protocolo experimental que evalúa el estilo de apego de un niño observando sus reacciones ante la separación y reunión con su cuidador principal.</span></span> encontraron que aproximadamente el <strong>20% de los niños</strong> mostraban un patrón evitativo.</p>
+          <p>Estudios posteriores de Hazan y Shaver (1987) confirmaron que esta proporción se mantiene en la edad adulta, con cifras similares en población general.</p>
+        </div>
+        <span class="fuente-tag">📚 Ainsworth, 1978 · Hazan & Shaver, 1987</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ DEPRESIÓN ══════════════ -->
+<div id="page-depresion" class="page" style="padding-top:44px;">
+  <div class="pg-header">
+    <div class="pg-header-inner">
+      <button class="pg-back" onclick="goTo('inicio')">←</button>
+      <span class="pg-title">🌿 Depresión</span>
+    </div>
+  </div>
+  <div class="contenido-wrap">
+    <div class="nivel-toggle">
+      <button class="nivel-btn activo" onclick="setNivelDep('basico',this)">📖 Lectura fácil</button>
+      <button class="nivel-btn" onclick="setNivelDep('detallado',this)">🔬 Detallado</button>
+    </div>
+
+    <div id="nivel-dep-basico">
+      <div class="contenido-bloque">
+        <div class="bloque-titulo" style="color:#2D6A4F;">🌱 ¿Qué es la depresión?</div>
+        <div class="bloque-texto">
+          <p>La depresión no es "estar triste". Es una condición médica real que afecta cómo piensas, sientes y actúas en tu día a día.</p>
+          <p>No es debilidad, no es flojera, no es algo que se cure "poniéndote las pilas". Es una condición que tiene tratamiento y de la que se puede salir.</p>
+          <p>Según la OMS, afecta a más de <strong>332 millones de personas</strong> en el mundo.</p>
+        </div>
+        <span class="fuente-tag" style="background:#EAF5EE;color:#2D6A4F;">📚 OMS, 2023 · Ministerio de Sanidad España</span>
+      </div>
+
+      <div class="contenido-bloque">
+        <div class="bloque-titulo" style="color:#2D6A4F;">⚠️ Señales de alerta</div>
+        <div class="bloque-texto">
+          <p>Según el Ministerio de Sanidad, para hablar de depresión los síntomas deben durar <strong>al menos dos semanas</strong>:</p>
+        </div>
+        <div class="señales-grid" style="margin-top:10px;">
+          <div class="señal-item" style="background:#EAF5EE;color:#2D6A4F;">😔 Tristeza la mayor parte del día</div>
+          <div class="señal-item" style="background:#EAF5EE;color:#2D6A4F;">😴 Dormir demasiado o muy poco</div>
+          <div class="señal-item" style="background:#EAF5EE;color:#2D6A4F;">🫥 Pérdida de interés en todo</div>
+          <div class="señal-item" style="background:#EAF5EE;color:#2D6A4F;">⚡ Cansancio constante</div>
+          <div class="señal-item" style="background:#EAF5EE;color:#2D6A4F;">🧠 Dificultad para concentrarse</div>
+          <div class="señal-item" style="background:#EAF5EE;color:#2D6A4F;">💭 Pensamientos negativos repetitivos</div>
+        </div>
+        <span class="fuente-tag" style="background:#EAF5EE;color:#2D6A4F;">📚 Ministerio de Sanidad · CIE-11 · DSM-5</span>
+      </div>
+
+      <div class="contenido-bloque" style="background:#FFF8EE;border-color:#F59E0B44;">
+        <div class="bloque-titulo" style="color:#92400E;">📞 Si te reconoces en estos síntomas</div>
+        <div class="bloque-texto" style="color:#78350F;">
+          <p>Habla con tu médico de cabecera. Es el primer paso y el más importante. También puedes llamar al <strong>024</strong> — es gratuito, confidencial y están disponibles 24 horas.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="nivel-dep-detallado" style="display:none;">
+      <div class="contenido-bloque">
+        <div class="bloque-titulo" style="color:#2D6A4F;">🔬 Criterios diagnósticos oficiales</div>
+        <div class="bloque-texto">
+          <p>Según la Guía de Práctica Clínica del Ministerio de Sanidad, adaptada de la OMS, el episodio depresivo mayor requiere la presencia de al menos 5 síntomas durante un período de dos semanas, incluyendo obligatoriamente uno de los dos síntomas cardinales:</p>
+          <p><strong>1. Humor depresivo</strong> claramente anormal la mayor parte del día casi todos los días.<br>
+          <strong>2. Marcada pérdida de interés o placer</strong> en actividades anteriormente placenteras.</p>
+          <p>La depresión afecta aproximadamente al <strong>10,6% de la población española</strong> a lo largo de su vida, según el estudio ESEMeD.</p>
+        </div>
+        <span class="fuente-tag" style="background:#EAF5EE;color:#2D6A4F;">📚 Ministerio de Sanidad · OMS · DSM-5 · CIE-11</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ CONEXIÓN ══════════════ -->
+<div id="page-conexion" class="page" style="padding-top:44px;">
+  <div class="pg-header">
+    <div class="pg-header-inner">
+      <button class="pg-back" onclick="goTo('inicio')">←</button>
+      <span class="pg-title">🔗 La conexión</span>
+    </div>
+  </div>
+  <div class="contenido-wrap">
+    <div class="contenido-bloque" style="background:var(--lila-suave);border-color:#C4B5FD;">
+      <div class="bloque-titulo" style="color:var(--lila);">🔗 ¿Existe relación científica?</div>
+      <div class="bloque-texto">
+        <p>Sí. Y está bien documentada. El apego evitativo no causa depresión de forma directa, pero es un <strong>factor de riesgo demostrado</strong>.</p>
+        <p>Los estudios muestran que mientras el 85% de personas sin depresión tienen apego seguro, entre las personas con depresión grave el apego inseguro o evitativo es significativamente más frecuente.</p>
+      </div>
+      <span class="fuente-tag" style="background:#EDE9FE;color:var(--lila);">📚 Estudios clínicos publicados en Journal of Affective Disorders</span>
+    </div>
+
+    <div class="contenido-bloque">
+      <div class="bloque-titulo">⚙️ ¿Por qué ocurre?</div>
+      <div class="bloque-texto">
+        <p><strong>La soledad no elegida.</strong> Una persona con apego evitativo rechaza la intimidad pero en el fondo la necesita. Esa contradicción genera un aislamiento emocional crónico que puede derivar en depresión.</p>
+        <p><strong>La autocrítica silenciosa.</strong> Muchas personas con apego evitativo se culpan por no poder conectar. Ese ciclo de autocrítica es un factor de riesgo directo para la depresión.</p>
+        <p><strong>La represión emocional.</strong> Suprimir emociones de forma crónica tiene un coste físico y mental documentado científicamente.</p>
+      </div>
+      <span class="fuente-tag">📚 Mikulincer & Shaver, 2016 · APA</span>
+    </div>
+
+    <div class="contenido-bloque">
+      <div class="bloque-titulo">💡 Lo que esto significa para ti</div>
+      <div class="bloque-texto">
+        <p>Si tienes apego evitativo y también síntomas depresivos, no es casualidad. Tampoco es tu culpa. Es el resultado de patrones aprendidos muy temprano que puedes entender y trabajar.</p>
+        <p>Entender el origen es el primer paso para cambiarlo.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ DIARIO ══════════════ -->
+<div id="page-diario" class="page" style="padding-top:44px;">
+  <div class="pg-header">
+    <div class="pg-header-inner">
+      <button class="pg-back" onclick="goTo('inicio')">←</button>
+      <span class="pg-title">📔 Diario emocional</span>
+    </div>
+  </div>
+  <div class="diario-wrap">
+    <div style="background:#FFF8EE;border-radius:14px;padding:12px 14px;margin-bottom:16px;font-size:.8rem;font-weight:700;color:#92400E;border:1.5px solid #F59E0B44;">
+      🔒 Todo lo que escribas se guarda solo en tu dispositivo. Nadie más puede verlo.
+    </div>
+    <div class="diario-fecha" id="diario-fecha"></div>
+    <div style="font-size:.85rem;font-weight:700;margin-bottom:8px;color:var(--gris);">¿Cómo estás hoy?</div>
+    <div class="humor-track">
+      <button class="humor-btn" onclick="selHumor(this,'😢')">😢</button>
+      <button class="humor-btn" onclick="selHumor(this,'😔')">😔</button>
+      <button class="humor-btn" onclick="selHumor(this,'😐')">😐</button>
+      <button class="humor-btn" onclick="selHumor(this,'🙂')">🙂</button>
+      <button class="humor-btn" onclick="selHumor(this,'😊')">😊</button>
+    </div>
+    <textarea class="diario-textarea" id="diario-texto" placeholder="Escribe lo que sientes hoy. No hay formato correcto ni incorrecto..."></textarea>
+    <button class="diario-guardar" onclick="guardarEntrada()">Guardar entrada</button>
+    <div class="entradas-lista" id="entradas-lista"></div>
+  </div>
+</div>
+
+<!-- ══════════════ ASISTENTE ══════════════ -->
+<div id="page-asistente" class="page" style="padding-top:44px;display:flex;flex-direction:column;">
+  <div class="pg-header">
+    <div class="pg-header-inner">
+      <button class="pg-back" onclick="goTo('inicio')">←</button>
+      <span class="pg-title">💬 Asistente de dudas</span>
+    </div>
+  </div>
+  <div class="asistente-aviso">
+    <strong>💡 Sobre este asistente</strong>
+    No es una inteligencia artificial. Responde con información extraída de fuentes médicas oficiales: OMS, Ministerio de Sanidad, APA y estudios científicos verificados. No sustituye a un profesional. Ante cualquier crisis llama al <strong>024</strong>.
+  </div>
+  <div class="chat-area" id="chat-area">
+    <div class="msg bot">
+      <div class="msg-avatar">🧠</div>
+      <div>
+        <div class="msg-burbuja">Hola. Puedo responder tus dudas sobre apego evitativo y depresión con información de fuentes oficiales. ¿Qué quieres saber?</div>
+        <div class="msg-fuente">🔒 Asistente informativo · No es IA</div>
+      </div>
+    </div>
+  </div>
+  <div class="sugerencias">
+    <button class="sugerencia-btn" onclick="pregunta('¿Cómo sé si tengo apego evitativo?')">¿Cómo sé si tengo apego evitativo?</button>
+    <button class="sugerencia-btn" onclick="pregunta('¿Puede cambiar el estilo de apego?')">¿Puede cambiar el estilo de apego?</button>
+    <button class="sugerencia-btn" onclick="pregunta('¿Cuándo debo buscar ayuda profesional?')">¿Cuándo debo buscar ayuda profesional?</button>
+  </div>
+  <div class="chat-input-wrap">
+    <input type="text" class="chat-input" id="chat-input" placeholder="Escribe tu pregunta..." onkeydown="if(event.key==='Enter')enviarMensaje()">
+    <button class="chat-send" onclick="enviarMensaje()">→</button>
+  </div>
+</div>
+
+<!-- ══════════════ GLOSARIO ══════════════ -->
+<div id="page-glosario" class="page" style="padding-top:44px;">
+  <div class="pg-header">
+    <div class="pg-header-inner">
+      <button class="pg-back" onclick="goTo('inicio')">←</button>
+      <span class="pg-title">📚 Glosario</span>
+    </div>
+  </div>
+  <div class="glosario-wrap">
+    <div class="glosario-item" onclick="this.classList.toggle('open')">
+      <div class="glosario-term">Apego evitativo <span>+</span></div>
+      <div class="glosario-def">Estilo de relación aprendido en la infancia en el que la persona evita la intimidad emocional como mecanismo de protección ante cuidadores poco disponibles emocionalmente.<div class="glosario-fuente">Fuente: Bowlby, 1988 · Ainsworth, 1978</div></div>
+    </div>
+    <div class="glosario-item" onclick="this.classList.toggle('open')">
+      <div class="glosario-term">Teoría del Apego <span>+</span></div>
+      <div class="glosario-def">Marco teórico desarrollado por John Bowlby que explica cómo los vínculos emocionales tempranos con los cuidadores moldean las relaciones y la salud mental a lo largo de toda la vida.<div class="glosario-fuente">Fuente: Bowlby, 1969</div></div>
+    </div>
+    <div class="glosario-item" onclick="this.classList.toggle('open')">
+      <div class="glosario-term">Modelos Internos de Funcionamiento <span>+</span></div>
+      <div class="glosario-def">Representaciones mentales sobre uno mismo y los demás, formadas en la infancia, que actúan como "plantillas" para interpretar las relaciones en la vida adulta.<div class="glosario-fuente">Fuente: Bowlby, 1973 · Mikulincer & Shaver, 2016</div></div>
+    </div>
+    <div class="glosario-item" onclick="this.classList.toggle('open')">
+      <div class="glosario-term">Episodio depresivo mayor <span>+</span></div>
+      <div class="glosario-def">Condición médica caracterizada por tristeza persistente o pérdida de interés durante al menos dos semanas, con impacto significativo en el funcionamiento diario. Diagnóstico oficial según DSM-5 y CIE-11.<div class="glosario-fuente">Fuente: DSM-5 · CIE-11 · Ministerio de Sanidad España</div></div>
+    </div>
+    <div class="glosario-item" onclick="this.classList.toggle('open')">
+      <div class="glosario-term">Regulación emocional <span>+</span></div>
+      <div class="glosario-def">Capacidad para reconocer, comprender y gestionar las propias emociones de forma adaptativa. Las personas con apego evitativo suelen tener dificultades en esta área.<div class="glosario-fuente">Fuente: Gross, 1998 · APA</div></div>
+    </div>
+    <div class="glosario-item" onclick="this.classList.toggle('open')">
+      <div class="glosario-term">TCC — Terapia Cognitivo-Conductual <span>+</span></div>
+      <div class="glosario-def">Tipo de psicoterapia con mayor evidencia científica para el tratamiento de la depresión. Se basa en identificar y modificar pensamientos y conductas que mantienen el malestar.<div class="glosario-fuente">Fuente: NICE Guidelines · APA · Ministerio de Sanidad</div></div>
+    </div>
+  </div>
+  <div style="text-align:center;padding:16px 18px 6px;">
+    <button onclick="goTo('aviso')" style="background:none;border:none;font-family:'Nunito',sans-serif;font-size:.75rem;color:var(--gris);cursor:pointer;text-decoration:underline;">&#128221; Aviso Legal &middot; Ayudante Anonimo &middot; mivozapp.gratis@gmail.com</button>
+  </div>
+
+</div>
+
+<!-- NAV BOTTOM -->
+
+<!-- RELACIONES -->
+<div id="page-relaciones" class="page">
+  <div class="pg-header" style="background:linear-gradient(135deg,#FEF3EB,white);">
+    <div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#128145; Como me afecta en mis relaciones</span></div>
+  </div>
+  <div class="contenido-wrap">
+    <div class="relacion-tab-bar">
+      <button class="relacion-tab activo" onclick="setRel('pareja',this)">&#128145; Pareja</button>
+      <button class="relacion-tab" onclick="setRel('familia',this)">&#128106; Familia</button>
+      <button class="relacion-tab" onclick="setRel('amigos',this)">&#128101; Amigos</button>
+      <button class="relacion-tab" onclick="setRel('trabajo',this)">&#128188; Trabajo</button>
+    </div>
+    <div id="rel-pareja" class="relacion-panel activo">
+      <div class="contenido-bloque">
+        <div class="bloque-titulo" style="color:#E07B39;">&#128145; Relaciones de pareja</div>
+        <div class="bloque-texto"><p>El apego evitativo se manifiesta con especial intensidad en las relaciones romanticas. La cercania que la pareja busca activa el sistema de alarma de la persona evitativa.</p></div>
+      </div>
+      <div class="patron-item"><strong>Patron: Acercamiento-alejamiento</strong>Cuando la pareja se aleja, el deseo de conexion aparece. Cuando se acerca demasiado, el impulso es alejarse. Este ciclo puede ser muy desgastante para ambas partes.</div>
+      <div class="patron-item"><strong>Patron: Idealizar a quien no esta disponible</strong>Tendencia a sentirse atraido/a por personas emocionalmente no disponibles, porque mantienen la distancia "segura".</div>
+      <div class="patron-item"><strong>Patron: Sabotear cuando va bien</strong>Cuando la relacion es estable y cercana, puede surgir el impulso de poner distancia o provocar conflicto sin razon aparente.</div>
+      <span class="fuente-tag" style="background:#FEF3EB;color:#E07B39;">&#128218; Fraley &amp; Shaver, 2000 &middot; Mikulincer &amp; Shaver, 2016</span>
+    </div>
+    <div id="rel-familia" class="relacion-panel">
+      <div class="contenido-bloque">
+        <div class="bloque-titulo" style="color:#E07B39;">&#128106; Relaciones familiares</div>
+        <div class="bloque-texto"><p>La familia es el origen del apego evitativo y a menudo el lugar donde los patrones se perpetuan.</p></div>
+      </div>
+      <div class="patron-item"><strong>Patron: Dificultad para recibir cuidado</strong>Cuando un familiar intenta cuidar o apoyar, la persona evitativa puede rechazarlo o minimizarlo.</div>
+      <div class="patron-item"><strong>Patron: Rol de "el/la fuerte"</strong>Adoptar el papel de quien nunca necesita ayuda puede generar agotamiento emocional cronico.</div>
+      <div class="patron-item"><strong>Patron: Evitar conversaciones emocionales</strong>Las reuniones familiares pueden sentirse agotadoras si implican hablar de sentimientos.</div>
+      <span class="fuente-tag" style="background:#FEF3EB;color:#E07B39;">&#128218; Bowlby, 1988 &middot; Ainsworth, 1978</span>
+    </div>
+    <div id="rel-amigos" class="relacion-panel">
+      <div class="contenido-bloque">
+        <div class="bloque-titulo" style="color:#E07B39;">&#128101; Amistades</div>
+        <div class="bloque-texto"><p>Las amistades suelen ser funcionales y agradables en lo superficial, pero cuesta mucho profundizar.</p></div>
+      </div>
+      <div class="patron-item"><strong>Patron: Muchos conocidos, pocos amigos reales</strong>Es mas facil mantener muchas relaciones ligeras que pocas relaciones profundas.</div>
+      <div class="patron-item"><strong>Patron: Desaparecer cuando alguien se acerca demasiado</strong>Cuando una amistad busca mas profundidad, el impulso puede ser distanciarse.</div>
+      <div class="patron-item"><strong>Patron: Agotamiento ante las necesidades emocionales de otros</strong>Las conversaciones muy emocionales pueden generar incomodidad o sensacion de agobio.</div>
+      <span class="fuente-tag" style="background:#FEF3EB;color:#E07B39;">&#128218; Mikulincer &amp; Shaver, 2016 &middot; Bartholomew &amp; Horowitz, 1991</span>
+    </div>
+    <div id="rel-trabajo" class="relacion-panel">
+      <div class="contenido-bloque">
+        <div class="bloque-titulo" style="color:#E07B39;">&#128188; Entorno laboral</div>
+        <div class="bloque-texto"><p>El trabajo suele ser el area donde la persona con apego evitativo se siente mas comoda, porque la distancia emocional esta socialmente aceptada.</p></div>
+      </div>
+      <div class="patron-item"><strong>Fortaleza: Alto rendimiento individual</strong>La autosuficiencia suele traducirse en gran capacidad de trabajo autonomo y resolucion de problemas.</div>
+      <div class="patron-item"><strong>Patron: Dificultad para pedir ayuda o delegar</strong>Pedir ayuda puede sentirse como una senal de debilidad, lo que puede generar sobrecarga.</div>
+      <div class="patron-item"><strong>Patron: Conflictos en trabajo en equipo cercano</strong>Los entornos con mucha colaboracion emocional pueden generar incomodidad.</div>
+      <span class="fuente-tag" style="background:#FEF3EB;color:#E07B39;">&#128218; APA &middot; Mikulincer &amp; Shaver, 2016</span>
+    </div>
+  </div>
+</div>
+
+<!-- EJERCICIOS -->
+<div id="page-ejercicios" class="page">
+  <div class="pg-header" style="background:linear-gradient(135deg,var(--verde-suave),white);">
+    <div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#128170; Ejercicios practicos</span></div>
+  </div>
+  <div class="contenido-wrap">
+    <div style="background:#FFF8EE;border-radius:13px;padding:11px 13px;margin-bottom:15px;font-size:.78rem;line-height:1.6;color:#92400E;border:1.5px solid #F59E0B44;">
+      &#9954; Estas tecnicas son herramientas de apoyo basadas en evidencia. No sustituyen a un profesional de salud mental.
+    </div>
+    <div class="ejercicio-card" onclick="this.classList.toggle('open')">
+      <div class="ej-header">
+        <div class="ej-ico" style="background:var(--verde-suave);">&#127811;</div>
+        <div><div class="ej-nombre">Respiracion 4-7-8</div><div class="ej-desc">Para reducir la ansiedad &middot; 5 minutos</div></div>
+        <div style="margin-left:auto;color:var(--gris);">&#9662;</div>
+      </div>
+      <div class="ej-contenido">
+        <div class="ej-paso"><div class="ej-paso-num">1</div><div class="ej-paso-txt">Sientate comodamente y cierra los ojos. Expulsa todo el aire por la boca.</div></div>
+        <div class="ej-paso"><div class="ej-paso-num">2</div><div class="ej-paso-txt">Inhala por la nariz contando hasta <strong>4</strong>.</div></div>
+        <div class="ej-paso"><div class="ej-paso-num">3</div><div class="ej-paso-txt">Reten el aire contando hasta <strong>7</strong>.</div></div>
+        <div class="ej-paso"><div class="ej-paso-num">4</div><div class="ej-paso-txt">Exhala lentamente por la boca contando hasta <strong>8</strong>.</div></div>
+        <div class="ej-paso"><div class="ej-paso-num">5</div><div class="ej-paso-txt">Repite el ciclo <strong>4 veces</strong>.</div></div>
+        <div class="ej-aviso">Activa el sistema nervioso parasimpatico, reduciendo la respuesta de estres. Basada en tecnicas yoguicas revisadas por la APA.</div>
+        <span class="fuente-tag" style="background:var(--verde-suave);color:var(--verde);">&#128218; Weil, A. &middot; Revisada por APA</span>
+      </div>
+    </div>
+    <div class="ejercicio-card" onclick="this.classList.toggle('open')">
+      <div class="ej-header">
+        <div class="ej-ico" style="background:var(--azul-suave);">&#127795;</div>
+        <div><div class="ej-nombre">Grounding 5-4-3-2-1</div><div class="ej-desc">Para volver al presente &middot; 3-5 minutos</div></div>
+        <div style="margin-left:auto;color:var(--gris);">&#9662;</div>
+      </div>
+      <div class="ej-contenido">
+        <div class="ej-paso"><div class="ej-paso-num">5</div><div class="ej-paso-txt">Nombra <strong>5 cosas que puedes VER</strong> a tu alrededor.</div></div>
+        <div class="ej-paso"><div class="ej-paso-num">4</div><div class="ej-paso-txt">Nombra <strong>4 cosas que puedes TOCAR</strong>. Nota su textura.</div></div>
+        <div class="ej-paso"><div class="ej-paso-num">3</div><div class="ej-paso-txt">Nombra <strong>3 cosas que puedes OIR</strong> ahora mismo.</div></div>
+        <div class="ej-paso"><div class="ej-paso-num">2</div><div class="ej-paso-txt">Nombra <strong>2 cosas que puedes OLER</strong>.</div></div>
+        <div class="ej-paso"><div class="ej-paso-num">1</div><div class="ej-paso-txt">Nombra <strong>1 cosa que puedes SABOREAR</strong>.</div></div>
+        <div class="ej-aviso">El grounding interrumpe los pensamientos rumiativos anclando la atencion al momento presente a traves de los sentidos.</div>
+        <span class="fuente-tag">&#128218; TCC &middot; NICE Guidelines</span>
+      </div>
+    </div>
+    <div class="ejercicio-card" onclick="this.classList.toggle('open')">
+      <div class="ej-header">
+        <div class="ej-ico" style="background:#FFF8EE;">&#9997;</div>
+        <div><div class="ej-nombre">Escritura reflexiva</div><div class="ej-desc">Para procesar emociones dificiles &middot; 10-15 minutos</div></div>
+        <div style="margin-left:auto;color:var(--gris);">&#9662;</div>
+      </div>
+      <div class="ej-contenido">
+        <div class="ej-paso"><div class="ej-paso-num">1</div><div class="ej-paso-txt">Busca un momento tranquilo y escribe sin filtro durante <strong>10 minutos</strong>: <em>?Que siento ahora mismo?</em></div></div>
+        <div class="ej-paso"><div class="ej-paso-num">2</div><div class="ej-paso-txt">No corrijas ni releas mientras escribes. Deja que salga todo sin juzgarlo.</div></div>
+        <div class="ej-paso"><div class="ej-paso-num">3</div><div class="ej-paso-txt">Cuando termines, preguntate: <em>?De donde viene este sentimiento?</em></div></div>
+        <div class="ej-paso"><div class="ej-paso-num">4</div><div class="ej-paso-txt">No tienes que llegar a ninguna conclusion. El proceso de escribir ya es el ejercicio.</div></div>
+        <div class="ej-aviso">Puedes usar el Diario emocional de esta app para practicar la escritura reflexiva de forma privada.</div>
+        <span class="fuente-tag" style="background:#FFF8EE;color:#92400E;">&#128218; Pennebaker, J.W. &middot; Journal of Clinical Psychology</span>
+      </div>
+    </div>
+    <div class="ejercicio-card" onclick="this.classList.toggle('open')">
+      <div class="ej-header">
+        <div class="ej-ico" style="background:var(--lila-suave);">&#129497;</div>
+        <div><div class="ej-nombre">Escaneo corporal</div><div class="ej-desc">Para conectar con tu cuerpo &middot; 5-8 minutos</div></div>
+        <div style="margin-left:auto;color:var(--gris);">&#9662;</div>
+      </div>
+      <div class="ej-contenido">
+        <div class="ej-paso"><div class="ej-paso-num">1</div><div class="ej-paso-txt">Tumbate o sientate comodamente. Cierra los ojos y respira despacio.</div></div>
+        <div class="ej-paso"><div class="ej-paso-num">2</div><div class="ej-paso-txt">Lleva la atencion a los <strong>pies</strong>. ¿Que sientes? ¿Tension, calor, frio?</div></div>
+        <div class="ej-paso"><div class="ej-paso-num">3</div><div class="ej-paso-txt">Sube poco a poco: piernas, abdomen, pecho, hombros, cuello, cara.</div></div>
+        <div class="ej-paso"><div class="ej-paso-num">4</div><div class="ej-paso-txt">En las zonas de tension, respira hacia ellas e imagina que se relajan al exhalar.</div></div>
+        <div class="ej-aviso">Las personas con apego evitativo suelen tener dificultades para conectar con sus sensaciones fisicas. Esta practica ayuda a reconectar cuerpo y emocion.</div>
+        <span class="fuente-tag" style="background:var(--lila-suave);color:var(--lila);">&#128218; Kabat-Zinn, J. &middot; MBSR &middot; APA</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEGUIMIENTO -->
+<div id="page-seguimiento" class="page">
+  <div class="pg-header" style="background:linear-gradient(135deg,var(--azul-suave),white);">
+    <div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#128202; Seguimiento del animo</span></div>
+  </div>
+  <div class="contenido-wrap">
+    <div style="background:#F0F4F8;border-radius:13px;padding:11px 13px;margin-bottom:15px;font-size:.78rem;line-height:1.6;color:var(--gris);border:1.5px solid var(--borde);">
+      &#128274; Todo se guarda solo en tu dispositivo. Nadie mas puede verlo.
+    </div>
+    <div style="font-weight:800;font-size:.88rem;margin-bottom:9px;">Como estas hoy?</div>
+    <div class="humor-registro">
+      <button class="humor-reg-btn" onclick="selHumorSeg(this,1)"><span>&#128546;</span><span class="label">Muy mal</span></button>
+      <button class="humor-reg-btn" onclick="selHumorSeg(this,2)"><span>&#128532;</span><span class="label">Mal</span></button>
+      <button class="humor-reg-btn" onclick="selHumorSeg(this,3)"><span>&#128528;</span><span class="label">Regular</span></button>
+      <button class="humor-reg-btn" onclick="selHumorSeg(this,4)"><span>&#128578;</span><span class="label">Bien</span></button>
+      <button class="humor-reg-btn" onclick="selHumorSeg(this,5)"><span>&#128522;</span><span class="label">Muy bien</span></button>
+    </div>
+    <button class="seg-guardar" onclick="guardarSeguimiento()">Registrar estado de hoy</button>
+    <div class="grafica-wrap">
+      <div class="grafica-titulo">Ultimos 7 dias</div>
+      <div class="grafica-barras" id="grafica-barras"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RECURSOS -->
+<div id="page-recursos" class="page">
+  <div class="pg-header" style="background:linear-gradient(135deg,var(--verde-suave),white);">
+    <div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#128279; Recursos verificados</span></div>
+  </div>
+  <div class="contenido-wrap">
+    <div style="background:var(--verde-suave);border-radius:13px;padding:11px 13px;margin-bottom:4px;font-size:.78rem;line-height:1.6;color:#2D6A4F;border:1.5px solid #B7E4C7;">
+      &#9989; Todos los recursos han sido seleccionados por su base cientifica o respaldo institucional.
+    </div>
+    <div class="recurso-categoria">&#128218; LIBROS RECOMENDADOS</div>
+    <div class="recurso-item"><div class="recurso-ico">&#128216;</div><div><div class="recurso-titulo">Apego. Una teoria psicologica del vinculo</div><div class="recurso-desc">John Bowlby. La obra fundacional de la teoria del apego, adaptada para lectores no especializados.</div><span class="recurso-tag">Bowlby &middot; Ediciones Paidos</span></div></div>
+    <div class="recurso-item"><div class="recurso-ico">&#128216;</div><div><div class="recurso-titulo">Attached: The New Science of Adult Attachment</div><div class="recurso-desc">Amir Levine &amp; Rachel Heller. Referencia cientifica accesible sobre estilos de apego en adultos.</div><span class="recurso-tag">Levine &amp; Heller &middot; Penguin Books</span></div></div>
+    <div class="recurso-categoria">&#127760; WEBS OFICIALES</div>
+    <div class="recurso-item"><div class="recurso-ico">&#127973;</div><div><div class="recurso-titulo">Ministerio de Sanidad — Salud Mental</div><div class="recurso-desc">Guias clinicas y Plan de Accion de Salud Mental 2025-2027 del Gobierno de Espana.</div><span class="recurso-tag">sanidad.gob.es &middot; Oficial</span></div></div>
+    <div class="recurso-item"><div class="recurso-ico">&#127757;</div><div><div class="recurso-titulo">OMS — Salud Mental</div><div class="recurso-desc">Datos globales, guias y recursos de la Organizacion Mundial de la Salud sobre depresion.</div><span class="recurso-tag">who.int/es &middot; Oficial</span></div></div>
+    <div class="recurso-item"><div class="recurso-ico">&#129504;</div><div><div class="recurso-titulo">APA — American Psychological Association</div><div class="recurso-desc">Recursos sobre apego, depresion y bienestar emocional.</div><span class="recurso-tag">apa.org &middot; Oficial</span></div></div>
+    <div class="recurso-categoria">&#127911; PODCASTS EN ESPANOL</div>
+    <div class="recurso-item"><div class="recurso-ico">&#127897;</div><div><div class="recurso-titulo">Psicologia Al Desnudo</div><div class="recurso-desc">Podcast de la psicologa Molo Cebrian. Episodios sobre apego, relaciones y salud emocional.</div><span class="recurso-tag">Spotify &middot; Apple Podcasts</span></div></div>
+    <div class="recurso-item"><div class="recurso-ico">&#127897;</div><div><div class="recurso-titulo">Kaizen con Jaime Rodriguez de Santiago</div><div class="recurso-desc">Episodios sobre psicologia, habitos y bienestar emocional con entrevistas a expertos.</div><span class="recurso-tag">Spotify &middot; iVoox</span></div></div>
+    <div class="recurso-categoria">&#128222; AYUDA DIRECTA</div>
+    <div class="recurso-item" style="background:#FFF5F5;border-color:#FECACA;cursor:pointer;" onclick="goTo('crisis')"><div class="recurso-ico">&#128680;</div><div><div class="recurso-titulo" style="color:var(--crisis);">Ver todos los recursos de crisis</div><div class="recurso-desc">024, 112, 900 018 018 y mas recursos de ayuda inmediata.</div><span class="recurso-tag" style="background:#FEE2E2;color:var(--crisis);">Ir a la seccion de crisis &rarr;</span></div></div>
+  </div>
+</div>
+
+<!-- CRISIS PAGINA -->
+<div id="page-crisis" class="page">
+  <div class="crisis-hero">
+    <h1>&#128680; Necesitas apoyo</h1>
+    <p>No tienes que pasar por esto solo/a. Hay personas formadas esperando para ayudarte ahora mismo.</p>
+  </div>
+  <div class="contenido-wrap">
+    <button class="crisis-btn-grande" onclick="window.location='tel:024'">
+      <div class="cb-ico" style="background:#FEE2E2;">&#128222;</div>
+      <div><div class="cb-num" style="color:var(--crisis);">024</div><div class="cb-desc">Linea de atencion a conducta suicida. Gratuito &middot; Confidencial &middot; 24 horas &middot; Espana</div></div>
+    </button>
+    <button class="crisis-btn-grande" onclick="window.location='tel:112'">
+      <div class="cb-ico" style="background:#FEE2E2;">&#128680;</div>
+      <div><div class="cb-num" style="color:var(--crisis);">112</div><div class="cb-desc">Emergencias. Para situaciones de riesgo vital inmediato.</div></div>
+    </button>
+    <button class="crisis-btn-grande" onclick="window.location='tel:900018018'">
+      <div class="cb-ico" style="background:var(--verde-suave);">&#128153;</div>
+      <div><div class="cb-num" style="color:var(--verde);">900 018 018</div><div class="cb-desc">Linea de atencion psicologica ante el acoso escolar. Gratuito &middot; Confidencial.</div></div>
+    </button>
+    <div class="contenido-bloque" style="margin-top:8px;">
+      <div class="bloque-titulo" style="color:var(--crisis);">&#9888; Senales de que necesitas apoyo ahora</div>
+      <div class="crisis-senal">&#128308; <span>Pensamientos de hacerte dano o de no querer seguir</span></div>
+      <div class="crisis-senal">&#128308; <span>Sensacion de que no puedes mas con todo</span></div>
+      <div class="crisis-senal">&#128308; <span>Planes de quitarte la vida</span></div>
+      <div class="crisis-senal">&#128993; <span>Aislamiento total durante varios dias seguidos</span></div>
+    </div>
+    <div class="contenido-bloque" style="background:#FFF8EE;border-color:#F59E0B44;margin-top:8px;">
+      <div class="bloque-titulo" style="color:#92400E;">&#128161; Recuerda</div>
+      <div class="bloque-texto" style="color:#78350F;"><p>Pedir ayuda no es debilidad. Es exactamente lo contrario.</p><p>Esta app es informativa y no puede sustituir a un profesional. Si estas en crisis, llama al <strong>024</strong>.</p></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- RELACIONES -->
+<div id="page-relaciones" class="page"><div class="pg-header" style="background:linear-gradient(135deg,#FEF3EB,white);"><div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#128145; Como me afecta en mis relaciones</span></div></div><div class="contenido-wrap"><div class="relacion-tab-bar"><button class="relacion-tab activo" onclick="setRel('pareja',this)">&#128145; Pareja</button><button class="relacion-tab" onclick="setRel('familia',this)">&#128106; Familia</button><button class="relacion-tab" onclick="setRel('amigos',this)">&#128101; Amigos</button><button class="relacion-tab" onclick="setRel('trabajo',this)">&#128188; Trabajo</button></div>
+<div id="rel-pareja" class="relacion-panel activo"><div class="contenido-bloque"><div class="bloque-titulo" style="color:#E07B39;">&#128145; Relaciones de pareja</div><div class="bloque-texto"><p>El apego evitativo se manifiesta con especial intensidad en las relaciones romanticas. La cercania que la pareja busca activa el sistema de alarma de la persona evitativa.</p></div></div><div class="patron-item"><strong>Patron: Acercamiento-alejamiento</strong>Cuando la pareja se aleja, el deseo de conexion aparece. Cuando se acerca demasiado, el impulso es alejarse.</div><div class="patron-item"><strong>Patron: Idealizar a quien no esta disponible</strong>Tendencia a sentirse atraido/a por personas emocionalmente no disponibles.</div><div class="patron-item"><strong>Patron: Sabotear cuando va bien</strong>Cuando la relacion es estable, puede surgir el impulso de poner distancia.</div><span class="fuente-tag" style="background:#FEF3EB;color:#E07B39;">&#128218; Fraley &amp; Shaver, 2000 &middot; Mikulincer &amp; Shaver, 2016</span></div>
+<div id="rel-familia" class="relacion-panel"><div class="contenido-bloque"><div class="bloque-titulo" style="color:#E07B39;">&#128106; Relaciones familiares</div><div class="bloque-texto"><p>La familia es el origen del apego evitativo y a menudo donde los patrones se perpetuan.</p></div></div><div class="patron-item"><strong>Patron: Dificultad para recibir cuidado</strong>Cuando un familiar intenta apoyar, la persona evitativa puede rechazarlo o minimizarlo.</div><div class="patron-item"><strong>Patron: Rol de "el/la fuerte"</strong>Adoptar el papel de quien nunca necesita ayuda puede generar agotamiento emocional.</div><div class="patron-item"><strong>Patron: Evitar conversaciones emocionales</strong>Las reuniones familiares pueden sentirse agotadoras si implican hablar de sentimientos.</div><span class="fuente-tag" style="background:#FEF3EB;color:#E07B39;">&#128218; Bowlby, 1988 &middot; Ainsworth, 1978</span></div>
+<div id="rel-amigos" class="relacion-panel"><div class="contenido-bloque"><div class="bloque-titulo" style="color:#E07B39;">&#128101; Amistades</div><div class="bloque-texto"><p>Las amistades suelen ser agradables en lo superficial, pero cuesta profundizar.</p></div></div><div class="patron-item"><strong>Patron: Muchos conocidos, pocos amigos reales</strong>Es mas facil mantener muchas relaciones ligeras que pocas relaciones profundas.</div><div class="patron-item"><strong>Patron: Desaparecer cuando alguien se acerca demasiado</strong>Cuando una amistad busca mas profundidad, el impulso puede ser distanciarse.</div><div class="patron-item"><strong>Patron: Agotamiento ante las necesidades emocionales de otros</strong>Las conversaciones muy emocionales pueden generar incomodidad.</div><span class="fuente-tag" style="background:#FEF3EB;color:#E07B39;">&#128218; Mikulincer &amp; Shaver, 2016 &middot; Bartholomew &amp; Horowitz, 1991</span></div>
+<div id="rel-trabajo" class="relacion-panel"><div class="contenido-bloque"><div class="bloque-titulo" style="color:#E07B39;">&#128188; Entorno laboral</div><div class="bloque-texto"><p>El trabajo suele ser el area donde la persona evitativa se siente mas comoda, porque la distancia emocional esta aceptada.</p></div></div><div class="patron-item"><strong>Fortaleza: Alto rendimiento individual</strong>La autosuficiencia suele traducirse en gran capacidad de trabajo autonomo.</div><div class="patron-item"><strong>Patron: Dificultad para pedir ayuda o delegar</strong>Pedir ayuda puede sentirse como debilidad, generando sobrecarga.</div><div class="patron-item"><strong>Patron: Conflictos en trabajo en equipo cercano</strong>Los entornos con mucha colaboracion emocional pueden generar incomodidad.</div><span class="fuente-tag" style="background:#FEF3EB;color:#E07B39;">&#128218; APA &middot; Mikulincer &amp; Shaver, 2016</span></div>
+</div></div>
+
+<!-- EJERCICIOS -->
+<div id="page-ejercicios" class="page"><div class="pg-header" style="background:linear-gradient(135deg,var(--verde-suave),white);"><div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#128170; Ejercicios practicos</span></div></div><div class="contenido-wrap">
+<div style="background:#FFF8EE;border-radius:13px;padding:11px 13px;margin-bottom:15px;font-size:.78rem;line-height:1.6;color:#92400E;border:1.5px solid #F59E0B44;">&#9954; Herramientas de apoyo basadas en evidencia. No sustituyen a un profesional.</div>
+<div class="ejercicio-card" onclick="this.classList.toggle('open')"><div class="ej-header"><div class="ej-ico" style="background:var(--verde-suave);">&#127811;</div><div><div class="ej-nombre">Respiracion 4-7-8</div><div class="ej-desc">Para reducir la ansiedad &middot; 5 min</div></div><div style="margin-left:auto;color:var(--gris);">&#9662;</div></div><div class="ej-contenido"><div class="ej-paso"><div class="ej-paso-num">1</div><div class="ej-paso-txt">Sientate comodamente. Expulsa todo el aire.</div></div><div class="ej-paso"><div class="ej-paso-num">2</div><div class="ej-paso-txt">Inhala por la nariz contando hasta <strong>4</strong>.</div></div><div class="ej-paso"><div class="ej-paso-num">3</div><div class="ej-paso-txt">Reten el aire contando hasta <strong>7</strong>.</div></div><div class="ej-paso"><div class="ej-paso-num">4</div><div class="ej-paso-txt">Exhala por la boca contando hasta <strong>8</strong>.</div></div><div class="ej-paso"><div class="ej-paso-num">5</div><div class="ej-paso-txt">Repite <strong>4 veces</strong>.</div></div><div class="ej-aviso">Activa el sistema nervioso parasimpatico, reduciendo la respuesta de estres.</div><span class="fuente-tag" style="background:var(--verde-suave);color:var(--verde);">&#128218; Weil, A. &middot; APA</span></div></div>
+<div class="ejercicio-card" onclick="this.classList.toggle('open')"><div class="ej-header"><div class="ej-ico" style="background:var(--azul-suave);">&#127795;</div><div><div class="ej-nombre">Grounding 5-4-3-2-1</div><div class="ej-desc">Para volver al presente &middot; 3-5 min</div></div><div style="margin-left:auto;color:var(--gris);">&#9662;</div></div><div class="ej-contenido"><div class="ej-paso"><div class="ej-paso-num">5</div><div class="ej-paso-txt">Nombra <strong>5 cosas que puedes VER</strong>.</div></div><div class="ej-paso"><div class="ej-paso-num">4</div><div class="ej-paso-txt">Nombra <strong>4 cosas que puedes TOCAR</strong>.</div></div><div class="ej-paso"><div class="ej-paso-num">3</div><div class="ej-paso-txt">Nombra <strong>3 cosas que puedes OIR</strong>.</div></div><div class="ej-paso"><div class="ej-paso-num">2</div><div class="ej-paso-txt">Nombra <strong>2 cosas que puedes OLER</strong>.</div></div><div class="ej-paso"><div class="ej-paso-num">1</div><div class="ej-paso-txt">Nombra <strong>1 cosa que puedes SABOREAR</strong>.</div></div><div class="ej-aviso">Interrumpe los pensamientos rumiativos anclando la atencion al momento presente.</div><span class="fuente-tag">&#128218; TCC &middot; NICE Guidelines</span></div></div>
+<div class="ejercicio-card" onclick="this.classList.toggle('open')"><div class="ej-header"><div class="ej-ico" style="background:#FFF8EE;">&#9997;</div><div><div class="ej-nombre">Escritura reflexiva</div><div class="ej-desc">Para procesar emociones &middot; 10-15 min</div></div><div style="margin-left:auto;color:var(--gris);">&#9662;</div></div><div class="ej-contenido"><div class="ej-paso"><div class="ej-paso-num">1</div><div class="ej-paso-txt">Escribe sin filtro durante <strong>10 minutos</strong>: ¿Que siento ahora mismo?</div></div><div class="ej-paso"><div class="ej-paso-num">2</div><div class="ej-paso-txt">No corrijas ni releas mientras escribes.</div></div><div class="ej-paso"><div class="ej-paso-num">3</div><div class="ej-paso-txt">Cuando termines, preguntate: ¿De donde viene este sentimiento?</div></div><div class="ej-aviso">Puedes usar el Diario emocional de esta app para practicar de forma privada.</div><span class="fuente-tag" style="background:#FFF8EE;color:#92400E;">&#128218; Pennebaker, J.W. &middot; Journal of Clinical Psychology</span></div></div>
+<div class="ejercicio-card" onclick="this.classList.toggle('open')"><div class="ej-header"><div class="ej-ico" style="background:var(--lila-suave);">&#129497;</div><div><div class="ej-nombre">Escaneo corporal</div><div class="ej-desc">Para conectar con tu cuerpo &middot; 5-8 min</div></div><div style="margin-left:auto;color:var(--gris);">&#9662;</div></div><div class="ej-contenido"><div class="ej-paso"><div class="ej-paso-num">1</div><div class="ej-paso-txt">Tumbate comodamente. Cierra los ojos y respira despacio.</div></div><div class="ej-paso"><div class="ej-paso-num">2</div><div class="ej-paso-txt">Lleva la atencion a los <strong>pies</strong>. ¿Que sientes?</div></div><div class="ej-paso"><div class="ej-paso-num">3</div><div class="ej-paso-txt">Sube poco a poco: piernas, abdomen, pecho, hombros, cuello, cara.</div></div><div class="ej-paso"><div class="ej-paso-num">4</div><div class="ej-paso-txt">En las zonas de tension, respira hacia ellas e imagina que se relajan al exhalar.</div></div><div class="ej-aviso">Ayuda a reconectar cuerpo y emocion, especialmente util con apego evitativo.</div><span class="fuente-tag" style="background:var(--lila-suave);color:var(--lila);">&#128218; Kabat-Zinn, J. &middot; MBSR &middot; APA</span></div></div>
+</div></div>
+
+<!-- SEGUIMIENTO -->
+<div id="page-seguimiento" class="page"><div class="pg-header" style="background:linear-gradient(135deg,var(--azul-suave),white);"><div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#128202; Seguimiento del animo</span></div></div><div class="contenido-wrap">
+<div style="background:#F0F4F8;border-radius:13px;padding:11px 13px;margin-bottom:15px;font-size:.78rem;line-height:1.6;color:var(--gris);border:1.5px solid var(--borde);">&#128274; Todo se guarda solo en tu dispositivo.</div>
+<div style="font-weight:800;font-size:.88rem;margin-bottom:9px;">&#191;Como estas hoy?</div>
+<div class="humor-registro">
+  <button class="humor-reg-btn" onclick="selHumorSeg(this,1)"><span>&#128546;</span><span class="label">Muy mal</span></button>
+  <button class="humor-reg-btn" onclick="selHumorSeg(this,2)"><span>&#128532;</span><span class="label">Mal</span></button>
+  <button class="humor-reg-btn" onclick="selHumorSeg(this,3)"><span>&#128528;</span><span class="label">Regular</span></button>
+  <button class="humor-reg-btn" onclick="selHumorSeg(this,4)"><span>&#128578;</span><span class="label">Bien</span></button>
+  <button class="humor-reg-btn" onclick="selHumorSeg(this,5)"><span>&#128522;</span><span class="label">Muy bien</span></button>
+</div>
+<button class="seg-guardar" onclick="guardarSeguimiento()">Registrar estado de hoy</button>
+<div class="grafica-wrap"><div class="grafica-titulo">Ultimos 7 dias</div><div class="grafica-barras" id="grafica-barras"></div></div>
+</div></div>
+
+<!-- RECURSOS -->
+<div id="page-recursos" class="page"><div class="pg-header" style="background:linear-gradient(135deg,var(--verde-suave),white);"><div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#128279; Recursos verificados</span></div></div><div class="contenido-wrap">
+<div class="recurso-categoria">&#128218; LIBROS</div>
+<div class="recurso-item"><div class="recurso-ico">&#128216;</div><div><div class="recurso-titulo">Apego. Una teoria psicologica del vinculo</div><div class="recurso-desc">John Bowlby. La obra fundacional de la teoria del apego.</div><span class="recurso-tag">Bowlby &middot; Ediciones Paidos</span></div></div>
+<div class="recurso-item"><div class="recurso-ico">&#128216;</div><div><div class="recurso-titulo">Attached: The New Science of Adult Attachment</div><div class="recurso-desc">Amir Levine &amp; Rachel Heller. Referencia sobre estilos de apego en adultos.</div><span class="recurso-tag">Levine &amp; Heller &middot; Penguin Books</span></div></div>
+<div class="recurso-categoria">&#127760; WEBS OFICIALES</div>
+<div class="recurso-item"><div class="recurso-ico">&#127973;</div><div><div class="recurso-titulo">Ministerio de Sanidad — Salud Mental</div><div class="recurso-desc">Guias clinicas y Plan de Accion de Salud Mental 2025-2027.</div><span class="recurso-tag">sanidad.gob.es &middot; Oficial</span></div></div>
+<div class="recurso-item"><div class="recurso-ico">&#127757;</div><div><div class="recurso-titulo">OMS — Salud Mental</div><div class="recurso-desc">Datos globales y guias sobre depresion y salud mental.</div><span class="recurso-tag">who.int/es &middot; Oficial</span></div></div>
+<div class="recurso-item"><div class="recurso-ico">&#129504;</div><div><div class="recurso-titulo">APA — American Psychological Association</div><div class="recurso-desc">Recursos sobre apego, depresion y bienestar emocional.</div><span class="recurso-tag">apa.org &middot; Oficial</span></div></div>
+<div class="recurso-categoria">&#127911; PODCASTS EN ESPANOL</div>
+<div class="recurso-item"><div class="recurso-ico">&#127897;</div><div><div class="recurso-titulo">Psicologia Al Desnudo</div><div class="recurso-desc">Molo Cebrian. Episodios sobre apego, relaciones y salud emocional.</div><span class="recurso-tag">Spotify &middot; Apple Podcasts</span></div></div>
+<div class="recurso-item"><div class="recurso-ico">&#127897;</div><div><div class="recurso-titulo">Kaizen con Jaime Rodriguez de Santiago</div><div class="recurso-desc">Episodios sobre psicologia, habitos y bienestar emocional.</div><span class="recurso-tag">Spotify &middot; iVoox</span></div></div>
+<div class="recurso-categoria">&#128222; AYUDA DIRECTA</div>
+<div class="recurso-item" style="background:#FFF5F5;border-color:#FECACA;cursor:pointer;" onclick="goTo('crisis')"><div class="recurso-ico">&#128680;</div><div><div class="recurso-titulo" style="color:var(--crisis);">Ver todos los recursos de crisis</div><div class="recurso-desc">024, 112, 900 018 018 y mas recursos de ayuda inmediata.</div><span class="recurso-tag" style="background:#FEE2E2;color:var(--crisis);">Ir a la seccion de crisis &rarr;</span></div></div>
+</div></div>
+
+<!-- CRISIS -->
+<div id="page-crisis" class="page"><div class="crisis-hero"><h1>&#128680; Necesitas apoyo</h1><p>No tienes que pasar por esto solo/a. Hay personas formadas esperando para ayudarte ahora mismo.</p></div><div class="contenido-wrap">
+<button class="crisis-btn-grande" onclick="window.location='tel:024'"><div class="cb-ico" style="background:#FEE2E2;">&#128222;</div><div><div class="cb-num" style="color:var(--crisis);">024</div><div class="cb-desc">Linea atencion conducta suicida. Gratuito &middot; Confidencial &middot; 24h &middot; Espana</div></div></button>
+<button class="crisis-btn-grande" onclick="window.location='tel:112'"><div class="cb-ico" style="background:#FEE2E2;">&#128680;</div><div><div class="cb-num" style="color:var(--crisis);">112</div><div class="cb-desc">Emergencias. Para situaciones de riesgo vital inmediato.</div></div></button>
+<button class="crisis-btn-grande" onclick="window.location='tel:900018018'"><div class="cb-ico" style="background:var(--verde-suave);">&#128153;</div><div><div class="cb-num" style="color:var(--verde);">900 018 018</div><div class="cb-desc">Atencion psicologica acoso escolar. Gratuito &middot; Confidencial.</div></div></button>
+<div class="contenido-bloque" style="margin-top:8px;"><div class="bloque-titulo" style="color:var(--crisis);">&#9888; Senales de que necesitas apoyo ahora</div><div class="crisis-senal">&#128308; <span>Pensamientos de hacerte dano o no querer seguir</span></div><div class="crisis-senal">&#128308; <span>Sensacion de que no puedes mas con todo</span></div><div class="crisis-senal">&#128308; <span>Planes de quitarte la vida</span></div><div class="crisis-senal">&#128993; <span>Aislamiento total durante varios dias seguidos</span></div></div>
+<div class="contenido-bloque" style="background:#FFF8EE;border-color:#F59E0B44;margin-top:8px;"><div class="bloque-titulo" style="color:#92400E;">&#128161; Recuerda</div><div class="bloque-texto" style="color:#78350F;"><p>Pedir ayuda no es debilidad. Es exactamente lo contrario.</p><p>Esta app es informativa. Si estas en crisis, llama al <strong>024</strong>.</p></div></div>
+</div></div>
+
+<!-- CUERPO -->
+<div id="page-cuerpo" class="page"><div class="pg-header" style="background:linear-gradient(135deg,#FDF2F8,white);"><div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#128148; El cuerpo tambien habla</span></div></div><div class="contenido-wrap">
+<div class="contenido-bloque" style="background:#FDF2F8;border-color:#F9A8D4;"><div class="bloque-titulo" style="color:#9D174D;">&#128148; Cuando las emociones se quedan sin salida</div><div class="bloque-texto"><p>Las personas con apego evitativo aprenden desde pequenas a suprimir sus emociones. Pero las emociones no desaparecen: se quedan en el cuerpo.</p><p>La <strong>somatizacion</strong> es el proceso por el que el malestar emocional no expresado se convierte en sintomas fisicos reales. No es imaginacion: es biologia.</p></div><span class="fuente-tag" style="background:#FDF2F8;color:#9D174D;">&#128218; Mikulincer &amp; Shaver, 2016 &middot; Gross, 1998 &middot; APA</span></div>
+<div class="contenido-bloque"><div class="bloque-titulo">&#129327; Sintomas fisicos frecuentes</div><div class="senales-grid-2"><div class="senal-rosa">&#129760; Tension muscular o dolor de espalda sin causa medica</div><div class="senal-rosa">&#129488; Migranas o dolores de cabeza frecuentes</div><div class="senal-rosa">&#129680; Problemas digestivos (intestino irritable)</div><div class="senal-rosa">&#128564; Fatiga cronica sin explicacion</div><div class="senal-rosa">&#129387; Tension en el pecho o sensacion de ahogo</div><div class="senal-rosa">&#128552; Respuesta de estres exagerada ante intimidad</div></div><span class="fuente-tag" style="background:#FDF2F8;color:#9D174D;">&#128218; Pennebaker, 1997 &middot; Van der Kolk, 2014</span></div>
+<div class="contenido-bloque"><div class="bloque-titulo">&#129504; Por que ocurre esto</div><div class="bloque-texto"><p>El sistema nervioso autonomo no distingue entre una amenaza fisica y una emocional. Si suprimes emociones de forma cronica durante anos, el sistema nervioso se sobreactiva de forma permanente.</p><p><strong>El dolor es completamente real.</strong> Significa que cuidar tu mundo emocional tambien es cuidar tu salud fisica.</p></div><span class="fuente-tag">&#128218; Porges, 2011 (Teoria Polivagal) &middot; Ministerio de Sanidad</span></div>
+</div></div>
+
+<!-- PUEDE CAMBIAR -->
+<div id="page-cambio" class="page"><div class="pg-header" style="background:linear-gradient(135deg,#ECFDF5,white);"><div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#128994; Puede cambiar</span></div></div><div class="contenido-wrap">
+<div class="contenido-bloque" style="background:#ECFDF5;border-color:#6EE7B7;"><div class="bloque-titulo" style="color:#065F46;">&#10024; El apego seguro se puede ganar</div><div class="bloque-texto"><p>El estilo de apego no es una sentencia. El cerebro adulto tiene plasticidad suficiente para desarrollar nuevos patrones relacionales.</p><p>Se llama <strong>apego seguro ganado</strong> a la capacidad de alcanzar seguridad emocional a traves de experiencias reparadoras, aunque de nino no se tuvo un apego seguro.</p></div><span class="fuente-tag" style="background:#ECFDF5;color:#065F46;">&#128218; Mikulincer &amp; Shaver, 2016 &middot; Siegel, 2010 &middot; NICE Guidelines</span></div>
+<div class="contenido-bloque"><div class="bloque-titulo">&#128640; Como se produce el cambio</div><div style="margin-top:10px;"><div style="background:#ECFDF5;border-left:4px solid #10B981;border-radius:0 12px 12px 0;padding:12px 14px;margin-bottom:9px;"><div style="font-weight:800;font-size:.87rem;color:#065F46;margin-bottom:4px;">&#128101; 1. Relaciones seguras</div><div style="font-size:.82rem;line-height:1.6;">Personas que respetan tus limites y estan disponibles sin invadir. Cada experiencia asi actualiza tu modelo interno.</div></div><div style="background:#ECFDF5;border-left:4px solid #10B981;border-radius:0 12px 12px 0;padding:12px 14px;margin-bottom:9px;"><div style="font-weight:800;font-size:.87rem;color:#065F46;margin-bottom:4px;">&#128196; 2. Coherencia narrativa</div><div style="font-size:.82rem;line-height:1.6;">Poder contar tu historia de infancia entendiendo por que tus cuidadores actuaron como actuaron, sin idealizarlos ni destruirlos.</div></div><div style="background:#ECFDF5;border-left:4px solid #10B981;border-radius:0 12px 12px 0;padding:12px 14px;margin-bottom:9px;"><div style="font-weight:800;font-size:.87rem;color:#065F46;margin-bottom:4px;">&#129504; 3. Psicoterapia</div><div style="font-size:.82rem;line-height:1.6;">La relacion terapeutica es en si misma una experiencia de apego seguro. TCC, terapia centrada en el apego, EMDR y terapia de esquemas tienen evidencia solida.</div></div><div style="background:#ECFDF5;border-left:4px solid #10B981;border-radius:0 12px 12px 0;padding:12px 14px;"><div style="font-weight:800;font-size:.87rem;color:#065F46;margin-bottom:4px;">&#127775; 4. Pequenos actos de vulnerabilidad</div><div style="font-size:.82rem;line-height:1.6;">Compartir algo pequeno con alguien de confianza y ver que no pasa nada malo es mas transformador de lo que parece.</div></div></div><span class="fuente-tag" style="background:#ECFDF5;color:#065F46;margin-top:12px;display:inline-flex;">&#128218; Bowlby, 1988 &middot; Siegel, 2010 &middot; Mikulincer &amp; Shaver, 2016</span></div>
+<div class="contenido-bloque"><div class="bloque-titulo">&#128200; Senales de progreso</div><div style="margin-top:8px;display:flex;flex-direction:column;gap:7px;"><div style="background:var(--gris-suave);border-radius:10px;padding:9px 12px;font-size:.82rem;">&#9989; Puedes pedir algo pequeno sin sentirlo como una debilidad</div><div style="background:var(--gris-suave);border-radius:10px;padding:9px 12px;font-size:.82rem;">&#9989; Toleras mejor las conversaciones emocionales sin huir</div><div style="background:var(--gris-suave);border-radius:10px;padding:9px 12px;font-size:.82rem;">&#9989; Notas la incomodidad cuando surge, en lugar de no sentir nada</div><div style="background:var(--gris-suave);border-radius:10px;padding:9px 12px;font-size:.82rem;">&#9989; Tus relaciones empiezan a durar mas y sentirse mas seguras</div><div style="background:var(--gris-suave);border-radius:10px;padding:9px 12px;font-size:.82rem;">&#9989; Puedes nombrar lo que sientes, aunque sea con dificultad</div></div></div>
+</div></div>
+
+<!-- FAQ -->
+<div id="page-faq" class="page"><div class="pg-header"><div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#10067; Preguntas frecuentes</span></div></div><div class="contenido-wrap">
+<div style="font-size:.79rem;color:var(--gris);margin-bottom:16px;line-height:1.6;">Respuestas basadas en fuentes oficiales. Pulsa cada pregunta para ver la respuesta.</div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-pregunta">&#191;Tengo apego evitativo o simplemente soy introvertido/a? <span class="faq-toggle">+</span></div><div class="faq-respuesta">Son cosas distintas. La introversion es una preferencia por entornos tranquilos. El apego evitativo implica incomodidad especifica ante la cercania emocional y patrones de alejamiento cuando las relaciones se profundizan.<div class="faq-fuente">Fuente: Bartholomew &amp; Horowitz, 1991 &middot; APA</div></div></div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-pregunta">&#191;Es lo mismo apego evitativo que narcisismo? <span class="faq-toggle">+</span></div><div class="faq-respuesta">No. El apego evitativo no implica ausencia de empatia. Las personas con apego evitativo suelen sufrir internamente por su dificultad para conectar. El narcisismo es un patron de personalidad diferente con caracteristicas diagnosticas especificas.<div class="faq-fuente">Fuente: DSM-5 &middot; Mikulincer &amp; Shaver, 2016</div></div></div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-pregunta">&#191;Puede cambiar el apego evitativo sin terapia? <span class="faq-toggle">+</span></div><div class="faq-respuesta">Si, aunque es mas lento. Las relaciones con personas emocionalmente disponibles pueden actualizar los modelos internos. La psicoterapia acelera el proceso porque ofrece en si misma una experiencia de apego seguro.<div class="faq-fuente">Fuente: Mikulincer &amp; Shaver, 2016 &middot; Siegel, 2010</div></div></div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-pregunta">&#191;Se hereda el apego evitativo? <span class="faq-toggle">+</span></div><div class="faq-respuesta">No es genetico, pero si se transmite entre generaciones de forma inconsciente. Tomar conciencia de esto es el primer paso para romper el ciclo.<div class="faq-fuente">Fuente: Bowlby, 1988 &middot; Van IJzendoorn, 1995</div></div></div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-pregunta">&#191;Tengo depresion o simplemente estoy triste? <span class="faq-toggle">+</span></div><div class="faq-respuesta">La tristeza es una emocion normal y temporal. La depresion dura al menos dos semanas, afecta al funcionamiento diario, e incluye varios sintomas: fatiga, perdida de interes, dificultad para concentrarse. Si llevas mas de dos semanas, habla con tu medico.<div class="faq-fuente">Fuente: OMS &middot; DSM-5 &middot; Ministerio de Sanidad</div></div></div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-pregunta">&#191;Mi pareja tiene apego evitativo. Que hago? <span class="faq-toggle">+</span></div><div class="faq-respuesta">No puedes cambiar a otra persona. Forzar la cercania activa su sistema de alarma. Lo que ayuda: ser predecible y consistente, no tomar el alejamiento como rechazo personal, y animar sin presionar a buscar ayuda profesional.<div class="faq-fuente">Fuente: Fraley &amp; Shaver, 2000 &middot; Levine &amp; Heller, 2010</div></div></div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-pregunta">&#191;A que tipo de terapia debo ir? <span class="faq-toggle">+</span></div><div class="faq-respuesta">Para el apego evitativo y la depresion: TCC, terapia centrada en el apego, EMDR y terapia de esquemas tienen evidencia solida. Tu medico de cabecera puede derivarte, o busca un psicologo colegiado en cop.es.<div class="faq-fuente">Fuente: NICE Guidelines &middot; APA &middot; Ministerio de Sanidad</div></div></div>
+<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-pregunta">&#191;Esta app puede diagnosticarme? <span class="faq-toggle">+</span></div><div class="faq-respuesta">No. Esta app es exclusivamente informativa. El diagnostico requiere evaluacion clinica por un profesional. Si tienes dudas, el primer paso es tu medico de cabecera o el 024.<div class="faq-fuente">Fuente: Ayudante Anonimo &middot; mivozapp.gratis@gmail.com</div></div></div>
+</div></div>
+
+<!-- AVISO LEGAL -->
+<div id="page-aviso" class="page"><div class="pg-header"><div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#128221; Aviso Legal</span></div></div><div class="contenido-wrap">
+<div class="aviso-bloque"><div class="aviso-titulo">&#128100; Responsable</div><div class="aviso-texto"><p><strong>Nombre:</strong> Ayudante Anonimo</p><p><strong>Email:</strong> <span class="aviso-email">mivozapp.gratis@gmail.com</span></p><p><strong>Perfil:</strong> @AyudanteAnonim0 en X (Twitter)</p><p>Proyecto personal, gratuito y sin animo de lucro.</p></div></div>
+<div class="aviso-bloque"><div class="aviso-titulo">&#127760; Objeto del servicio</div><div class="aviso-texto"><p>Chachara Mental es una <strong>aplicacion web exclusivamente informativa</strong> sobre apego evitativo y depresion, dirigida a mayores de 16 anos. Uso completamente gratuito, sin registro.</p></div></div>
+<div class="aviso-bloque" style="background:#FFF8EE;border-color:#F59E0B44;"><div class="aviso-titulo" style="color:#92400E;">&#9889; Limitacion de responsabilidad</div><div class="aviso-texto" style="color:#78350F;"><p>Esta aplicacion <strong>no presta servicios sanitarios ni psicologicos</strong>. No constituye diagnostico clinico ni sustituye la evaluacion por un profesional. Ante cualquier crisis, llama al <strong>024</strong>.</p></div></div>
+<div class="aviso-bloque"><div class="aviso-titulo">&#128274; Privacidad</div><div class="aviso-texto"><p>Esta app <strong>no recoge ni transmite ningun dato personal</strong>. El Diario y el Seguimiento se guardan solo en tu dispositivo (<em>localStorage</em>). Vercel Analytics recoge datos anonimos y agregados, sin cookies, cumpliendo el RGPD.</p></div></div>
+<div class="aviso-bloque"><div class="aviso-titulo">&#127466;&#127480; Legislacion aplicable</div><div class="aviso-texto"><p>&#8226; <strong>LSSI</strong> — Ley 34/2002 &nbsp;&#8226; <strong>LOPDGDD</strong> — Ley Organica 3/2018 &nbsp;&#8226; <strong>RGPD</strong> — Reglamento (UE) 2016/679</p><p>Contacto: <span class="aviso-email">mivozapp.gratis@gmail.com</span></p></div></div>
+<div style="text-align:center;font-size:.72rem;color:var(--gris);padding:8px 0 4px;">Ultima actualizacion: marzo 2026 &middot; Chachara Mental &middot; Ayudante Anonimo</div>
+</div></div>
+
+<nav class="nav-bottom">
+  <button class="nav-btn active" id="nav-inicio" onclick="goTo('inicio')">&#127968; Inicio</button>
+  <button class="nav-btn" id="nav-apego" onclick="goTo('apego')">&#128153; Apego</button>
+  <button class="nav-btn" id="nav-relaciones" onclick="goTo('relaciones')">&#128145; Relaciones</button>
+  <button class="nav-btn" id="nav-diario" onclick="goTo('diario')">&#128212; Diario</button>
+  <button class="nav-btn" id="nav-asistente" onclick="goTo('asistente')">&#128172; Asistente</button>
+</nav>
+
+<script>
+// ── PÁGINAS ──
+const PAGES = ['inicio','apego','depresion','conexion','relaciones','ejercicios','seguimiento','diario','glosario','recursos','asistente','crisis','cuerpo','cambio','faq','aviso'];
+const NAV_IDS = ['inicio','apego','relaciones','diario','asistente'];
+
+function goTo(p) {
+  PAGES.forEach(id => {
+    const el = document.getElementById('page-'+id);
+    if(el) el.classList.remove('active');
+  });
+  NAV_IDS.forEach(id => {
+    const nb = document.getElementById('nav-'+id);
+    if(nb) nb.classList.remove('active');
+  });
+  const target = document.getElementById('page-'+p);
+  if(target) target.classList.add('active');
+  const nb = document.getElementById('nav-'+p);
+  if(nb) nb.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── NIVEL LECTURA ──
+function setNivel(nivel, btn) {
+  document.getElementById('nivel-basico').style.display = nivel==='basico'?'block':'none';
+  document.getElementById('nivel-detallado').style.display = nivel==='detallado'?'block':'none';
+  document.querySelectorAll('#page-apego .nivel-btn').forEach(b=>b.classList.remove('activo'));
+  btn.classList.add('activo');
+}
+function setNivelDep(nivel, btn) {
+  document.getElementById('nivel-dep-basico').style.display = nivel==='basico'?'block':'none';
+  document.getElementById('nivel-dep-detallado').style.display = nivel==='detallado'?'block':'none';
+  document.querySelectorAll('#page-depresion .nivel-btn').forEach(b=>b.classList.remove('activo'));
+  btn.classList.add('activo');
+}
+
+// ── BIENVENIDA ──
+function cerrarBienvenida() {
+  localStorage.setItem('chachara_bienvenida','1');
+  document.getElementById('bienvenida-overlay').classList.add('oculto');
+}
+if(localStorage.getItem('chachara_bienvenida')) {
+  document.getElementById('bienvenida-overlay').classList.add('oculto');
+}
+
+// ── DIARIO ──
+var humorSel = '';
+function selHumor(btn, emoji) {
+  document.querySelectorAll('.humor-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  humorSel = emoji;
+}
+function guardarEntrada() {
+  const texto = document.getElementById('diario-texto').value.trim();
+  if(!texto) return;
+  const entradas = JSON.parse(localStorage.getItem('chachara_diario')||'[]');
+  entradas.unshift({ fecha: new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}), humor: humorSel, texto });
+  localStorage.setItem('chachara_diario', JSON.stringify(entradas));
+  document.getElementById('diario-texto').value = '';
+  humorSel = '';
+  document.querySelectorAll('.humor-btn').forEach(b=>b.classList.remove('sel'));
+  renderEntradas();
+}
+function renderEntradas() {
+  const entradas = JSON.parse(localStorage.getItem('chachara_diario')||'[]');
+  const lista = document.getElementById('entradas-lista');
+  if(!entradas.length){lista.innerHTML='';return;}
+  lista.innerHTML = '<div style="font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--gris);margin:16px 0 10px;">Entradas anteriores</div>' +
+    entradas.map(e=>`<div class="entrada-item"><div class="entrada-meta">${e.humor||''} ${e.fecha}</div><div class="entrada-texto">${e.texto}</div></div>`).join('');
+}
+document.addEventListener('DOMContentLoaded', function(){
+  const hoy = new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+  const el = document.getElementById('diario-fecha');
+  if(el) el.textContent = hoy.charAt(0).toUpperCase()+hoy.slice(1);
+  renderEntradas();
+  renderGrafica();
+});
+
+// ── CRISIS ──
+function mostrarCrisis() {
+  const area = document.getElementById('chat-area');
+  if(area) {
+    goTo('asistente');
+    setTimeout(()=>{
+      const box = document.createElement('div');
+      box.className = 'msg bot';
+      box.innerHTML = `<div class="msg-avatar">🆘</div><div><div class="msg-crisis-box"><div class="msg-crisis-titulo">🆘 Necesitas apoyo ahora</div><div class="msg-crisis-texto">Si estás pasando un momento muy difícil, hay personas preparadas para ayudarte. No tienes que estar solo/a.</div><button class="crisis-btn" onclick="window.location='tel:024'">📞 024 — Gratuito · Confidencial · 24h</button><button class="crisis-btn secondary" onclick="window.location='tel:112'">📞 112 — Emergencias</button></div></div>`;
+      area.appendChild(box);
+      area.scrollTop = area.scrollHeight;
+    }, 300);
+  }
+}
+
+// ── ASISTENTE ──
+const PALABRAS_CRISIS = ['suicidio','suicidarme','quitarme la vida','no quiero vivir','no quiero seguir','hacerme daño','acabar con todo','me quiero morir','no puedo más con todo','desaparecer para siempre'];
+
+const RESPUESTAS = {
+  'apego evitativo': { texto: 'El apego evitativo es un estilo relacional aprendido en la infancia cuando las necesidades emocionales no fueron atendidas de forma consistente. No es una enfermedad ni un defecto de carácter — es una estrategia adaptativa que el niño desarrolló para protegerse. En la adultez se manifiesta como dificultad para la intimidad, alta valoración de la independencia y tendencia a suprimir emociones.', fuente: 'Bowlby, 1988 · Ainsworth, 1978 · Bartholomew & Horowitz, 1991' },
+  'tengo apego evitativo': { texto: 'Las señales más comunes incluyen: incomodidad ante la intimidad emocional, necesidad de mucho espacio personal, dificultad para pedir ayuda, ser percibido como frío o distante, y huir cuando las relaciones se intensifican. Si te identificas con varias de estas señales, puede ser útil explorarlo con un psicólogo especializado en apego.', fuente: 'Bartholomew & Horowitz, 1991 · Fraley & Shaver, 2000' },
+  'puede cambiar': { texto: 'Sí. El estilo de apego no es inmutable. La investigación muestra que con psicoterapia, especialmente terapia centrada en el apego o TCC, es posible desarrollar patrones de relación más seguros. También pueden influir positivamente las relaciones con personas que ofrecen seguridad emocional consistente. El cambio requiere tiempo y trabajo, pero está documentado científicamente.', fuente: 'Mikulincer & Shaver, 2016 · NICE Guidelines' },
+  'ayuda profesional': { texto: 'Se recomienda buscar ayuda profesional cuando los síntomas interfieren de forma significativa en tu vida diaria, tus relaciones o tu trabajo durante más de dos semanas. Tu médico de cabecera es el primer paso. También puedes llamar al 024 (gratuito, confidencial, 24h) si necesitas orientación.', fuente: 'Ministerio de Sanidad España · OMS' },
+  'depresión': { texto: 'La depresión es una condición médica, no una debilidad. Según el Ministerio de Sanidad y la OMS, se caracteriza por tristeza persistente o pérdida de interés durante al menos dos semanas, acompañada de otros síntomas como fatiga, dificultad para concentrarse o cambios en el sueño. Afecta al 10,6% de la población española a lo largo de su vida y tiene tratamiento eficaz.', fuente: 'OMS, 2023 · Ministerio de Sanidad · DSM-5' },
+};
+
+function detectarCrisis(texto) {
+  const t = texto.toLowerCase();
+  return PALABRAS_CRISIS.some(p => t.includes(p));
+}
+
+function pregunta(txt) {
+  document.getElementById('chat-input').value = txt;
+  enviarMensaje();
+}
+
+function enviarMensaje() {
+  const input = document.getElementById('chat-input');
+  const texto = input.value.trim();
+  if(!texto) return;
+  const area = document.getElementById('chat-area');
+
+  // Mensaje usuario
+  const msgUser = document.createElement('div');
+  msgUser.className = 'msg user';
+  msgUser.innerHTML = `<div class="msg-burbuja">${texto}</div>`;
+  area.appendChild(msgUser);
+  input.value = '';
+
+  setTimeout(()=>{
+    const msgBot = document.createElement('div');
+    msgBot.className = 'msg bot';
+
+    if(detectarCrisis(texto)) {
+      msgBot.innerHTML = `<div class="msg-avatar">🆘</div><div><div class="msg-crisis-box"><div class="msg-crisis-titulo">🆘 Parece que lo estás pasando muy mal</div><div class="msg-crisis-texto">Esta app no puede darte el apoyo que mereces en este momento. Por favor contacta con alguien formado para acompañarte ahora.</div><button class="crisis-btn">📞 024 — Gratuito · Confidencial · 24h</button><button class="crisis-btn secondary">📞 112 — Emergencias</button></div></div>`;
+    } else {
+      const t = texto.toLowerCase();
+      let resp = null;
+      for(const [clave, val] of Object.entries(RESPUESTAS)) {
+        if(t.includes(clave)) { resp = val; break; }
+      }
+      if(!resp) {
+        resp = { texto: 'Gracias por tu pregunta. Para darte información precisa y verificada sobre ese tema, te recomiendo explorar las secciones de Apego Evitativo o Depresión, o consultar directamente con un profesional de salud mental. Recuerda que el 024 también ofrece orientación gratuita y confidencial.', fuente: 'Asistente informativo · No es IA' };
+      }
+      msgBot.innerHTML = `<div class="msg-avatar">🧠</div><div><div class="msg-burbuja">${resp.texto}</div><div class="msg-fuente">📚 ${resp.fuente}</div></div>`;
+    }
+    area.appendChild(msgBot);
+    area.scrollTop = area.scrollHeight;
+  }, 800);
+
+  area.scrollTop = area.scrollHeight;
+}
+
+// RELACIONES
+function setRel(tab, btn) {
+  document.querySelectorAll('.relacion-panel').forEach(p=>p.classList.remove('activo'));
+  document.querySelectorAll('.relacion-tab').forEach(b=>b.classList.remove('activo'));
+  var panel = document.getElementById('rel-'+tab);
+  if(panel) panel.classList.add('activo');
+  btn.classList.add('activo');
+}
+
+// SEGUIMIENTO
+var humorSegVal = 0;
+function selHumorSeg(btn, val) {
+  document.querySelectorAll('.humor-reg-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); humorSegVal = val;
+}
+function guardarSeguimiento() {
+  if(!humorSegVal) return;
+  var emojis = {1:'&#128546;',2:'&#128532;',3:'&#128528;',4:'&#128578;',5:'&#128522;'};
+  var datos = JSON.parse(localStorage.getItem('chachara_seg')||'[]');
+  var hoy = new Date().toLocaleDateString('es-ES',{weekday:'short',day:'numeric'});
+  var todayKey = new Date().toDateString();
+  var idx = datos.findIndex(function(d){return d.key===todayKey;});
+  var entry = {key:todayKey,dia:hoy,val:humorSegVal,emoji:emojis[humorSegVal]};
+  if(idx>=0) datos[idx]=entry; else datos.push(entry);
+  if(datos.length>7) datos.splice(0,datos.length-7);
+  localStorage.setItem('chachara_seg', JSON.stringify(datos));
+  document.querySelectorAll('.humor-reg-btn').forEach(function(b){b.classList.remove('sel');});
+  humorSegVal=0;
+  renderGrafica();
+  var btn_el = document.querySelector('.seg-guardar');
+  if(btn_el){btn_el.textContent='Guardado'; setTimeout(function(){btn_el.textContent='Registrar estado de hoy';},1500);}
+}
+
+
+function renderGrafica() {
+  var datos = JSON.parse(localStorage.getItem('chachara_seg') || '[]');
+  var wrap = document.getElementById('grafica-barras');
+  if (!wrap) return;
+  var emojis = {1:'😢', 2:'😔', 3:'😐', 4:'🙂', 5:'😊'};
+  var ultimos = datos.slice(-7);
+  if (!ultimos.length) {
+    wrap.innerHTML = '<div style="font-size:.79rem;color:var(--gris);margin:auto;text-align:center;">Aun no hay datos.<br>Registra tu estado cada dia.</div>';
+    return;
+  }
+  wrap.innerHTML = ultimos.map(function(d) {
+    return '<div class="barra-wrap">' +
+      '<div class="barra-emoji">' + (emojis[d.val] || '') + '</div>' +
+      '<div class="barra llena" style="height:' + ((d.val/5)*56+6) + 'px;"></div>' +
+      '<div class="barra-dia">' + (d.dia ? d.dia.split(' ')[0] : '') + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
