@@ -881,13 +881,13 @@ body { font-family: 'Nunito', sans-serif; background: var(--crema); color: var(-
 </div>
 <div id="page-diario" class="page"><div class="pg-header"><div class="pg-header-inner"><button class="pg-back" onclick="goTo('inicio')">&#8592;</button><span class="pg-title">&#128213; Diario emocional</span></div></div><div class="contenido-wrap">
 <div style="background:#F0F4F8;border-radius:13px;padding:11px 13px;margin-bottom:14px;font-size:.78rem;line-height:1.6;color:var(--gris);border:1.5px solid var(--borde);">&#128274; Todo se guarda solo en tu dispositivo. Nadie mas puede acceder.</div>
-<div style="font-weight:800;font-size:.88rem;margin-bottom:8px;">&#128515; Como te sientes ahora?</div>
+<div id="diario-fecha" style="font-size:.78rem;color:var(--gris);margin-bottom:10px;text-align:center;font-weight:600;"></div><div style="font-weight:800;font-size:.88rem;margin-bottom:8px;">&#128515; Como te sientes ahora?</div>
 <div id="humor-grid" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
-  <button onclick="selHumor(this,'muy-bien')" style="background:white;border:2px solid var(--borde);border-radius:12px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;">&#128522; Muy bien</button>
-  <button onclick="selHumor(this,'bien')" style="background:white;border:2px solid var(--borde);border-radius:12px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;">&#128578; Bien</button>
-  <button onclick="selHumor(this,'regular')" style="background:white;border:2px solid var(--borde);border-radius:12px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;">&#128528; Regular</button>
-  <button onclick="selHumor(this,'mal')" style="background:white;border:2px solid var(--borde);border-radius:12px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;">&#128532; Mal</button>
-  <button onclick="selHumor(this,'muy-mal')" style="background:white;border:2px solid var(--borde);border-radius:12px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;">&#128546; Muy mal</button>
+  <button onclick="selHumor(this,'&#128522;')" style="background:white;border:2px solid var(--borde);border-radius:12px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;">&#128522; Muy bien</button>
+  <button onclick="selHumor(this,'&#128578;')" style="background:white;border:2px solid var(--borde);border-radius:12px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;">&#128578; Bien</button>
+  <button onclick="selHumor(this,'&#128528;')" style="background:white;border:2px solid var(--borde);border-radius:12px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;">&#128528; Regular</button>
+  <button onclick="selHumor(this,'&#128532;')" style="background:white;border:2px solid var(--borde);border-radius:12px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;">&#128532; Mal</button>
+  <button onclick="selHumor(this,'&#128546;')" style="background:white;border:2px solid var(--borde);border-radius:12px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;">&#128546; Muy mal</button>
 </div>
 <div style="font-weight:800;font-size:.88rem;margin-bottom:6px;">&#9997; Tu entrada de hoy</div>
 <textarea id="diario-texto" placeholder="Escribe aqui... (solo tu podras leer esto)" style="width:100%;min-height:140px;border-radius:14px;border:1.5px solid var(--borde);padding:14px;font-family:'Nunito',sans-serif;font-size:.87rem;line-height:1.65;resize:none;background:white;box-sizing:border-box;color:var(--texto);outline:none;"></textarea>
@@ -1509,7 +1509,7 @@ function enviarMensaje() {
     var msgBot = document.createElement('div');
     msgBot.className = 'msg bot';
     if(detectarCrisis(texto)) {
-      msgBot.innerHTML = '<div class="msg-avatar">&#128248;<\/div><div><div class="msg-crisis-box"><div class="msg-crisis-titulo">&#128248; Parece que lo estás pasando muy mal<\/div><div class="msg-crisis-texto">Esta app no puede darte el apoyo que mereces ahora mismo. Por favor contacta con alguien formado para acompañarte.<\/div><button class="crisis-btn">&#128222; 024 — Gratuito · Confidencial · 24h<\/button><button class="crisis-btn secondary">&#128222; 112 — Emergencias<\/button><\/div><\/div>';
+      msgBot.innerHTML = '<div class="msg-avatar">&#128248;<\/div><div><div class="msg-crisis-box"><div class="msg-crisis-titulo">&#128248; Parece que lo estás pasando muy mal<\/div><div class="msg-crisis-texto">Esta app no puede darte el apoyo que mereces ahora mismo. Por favor contacta con alguien formado para acompañarte.<\/div><button class="crisis-btn" onclick="window.location=\'tel:024\'">&#128222; 024 — Gratuito · Confidencial · 24h<\/button><button class="crisis-btn secondary" onclick="window.location=\'tel:112\'">&#128222; 112 — Emergencias<\/button><\/div><\/div>';
     } else {
       var t = texto.toLowerCase()
         .replace(/[áà]/g,'a').replace(/[éè]/g,'e')
@@ -1575,7 +1575,7 @@ function renderGrafica() {
   var datos = JSON.parse(localStorage.getItem('chachara_seg') || '[]');
   var wrap = document.getElementById('grafica-barras');
   if (!wrap) return;
-  var emojis = {1:'\u{1F622}',2:'\u{1F614}',3:'\u{1F610}',4:'\u{1F642}',5:'\u{1F60A}'};
+  var emojis = {1:'😢',2:'😔',3:'😐',4:'🙂',5:'😊'};
   var ultimos = datos.slice(-7);
   if (!ultimos.length) {
     wrap.innerHTML = '<div style="font-size:.79rem;color:var(--gris);text-align:center;padding:16px;">Aun no hay datos. Registra tu estado cada dia.<\/div>';
@@ -1814,6 +1814,13 @@ function abrirTest() {
   renderPregunta();
 }
 
+// Event delegation para botones del test (evita problemas con innerHTML recreation)
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('test-opcion')) {
+    elegirOpcion(e.target);
+  }
+});
+
 function cerrarTestModal() {
   var modal = document.getElementById('test-modal');
   if (modal) modal.classList.remove('visible');
@@ -1830,7 +1837,7 @@ function renderPregunta() {
   }).join('');
 
   var opciones = p.ops.map(function(op){
-    return '<button class="test-opcion" onclick="elegirOpcion(this,'+JSON.stringify(op.pts)+')">'+op.txt+'<\/button>';
+    return '<button class="test-opcion" data-pts=\'' + JSON.stringify(op.pts).replace(/'/g,'&apos;') + '\'>' + op.txt + '<\/button>';
   }).join('');
 
   modal.querySelector('.test-modal-inner').innerHTML =
@@ -1840,7 +1847,8 @@ function renderPregunta() {
     '<div class="test-opciones">'+opciones+'<\/div>';
 }
 
-function elegirOpcion(btn, pts) {
+function elegirOpcion(btn) {
+  var pts = JSON.parse(btn.getAttribute('data-pts') || '{}');
   document.querySelectorAll('.test-opcion').forEach(function(b){b.classList.remove('sel');});
   btn.classList.add('sel');
   for (var k in pts) { if (testPuntos[k]!==undefined) testPuntos[k] += pts[k]; }
