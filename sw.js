@@ -1,4 +1,4 @@
-const CACHE = 'chachara-v1';
+const CACHE = 'chachara-v3';
 const ASSETS = ['/'];
 
 self.addEventListener('install', e => {
