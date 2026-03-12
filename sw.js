@@ -1,5 +1,5 @@
-const CACHE = 'chachara-v3';
-const ASSETS = ['/'];
+const CACHE = 'chachara-v4';
+const ASSETS = ['/', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));

@@ -5,10 +5,10 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Chachara Mental">
 <meta name="theme-color" content="#1E3A50">
 <link rel="manifest" href="manifest.json">
@@ -35,10 +35,10 @@
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { font-family: 'Nunito', sans-serif; background: var(--crema); color: var(--texto); overflow-x: hidden; font-size: 16px; line-height: 1.6; }
+body { font-family: 'Nunito', sans-serif; background: var(--crema); color: var(--texto); overflow-x: hidden; font-size: 16px; line-height: 1.6; padding-top: env(safe-area-inset-top); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 
 /* ── PÁGINA SYSTEM ── */
-.page { display: none; min-height: 100vh; padding-bottom: 80px; }
+.page { display: none; min-height: 100vh; padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
 .page.active { display: block; }
 
 /* ── NAV BOTTOM ── */
@@ -46,7 +46,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--crema); color: var(-
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
   background: white; border-top: 1px solid var(--borde);
   display: flex; justify-content: space-around; align-items: center;
-  padding: 8px 0 12px;
+  padding: 8px 0 calc(12px + env(safe-area-inset-bottom));
   box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
 }
 .nav-btn {
